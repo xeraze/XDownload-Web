@@ -1,6 +1,6 @@
 # XDownload Web
 
-Веб-интерфейс к XDownload: YouTube, TikTok, Instagram, VK, Spotify - скачивание через yt-dlp на собственном железе.
+Веб-интерфейс к XDownload: 13 сервисов (YouTube, TikTok, Instagram, VK, Spotify и другие) - скачивание через yt-dlp на собственном железе.
 
 Бот и Go-бэкенд живут в основном репозитории: https://github.com/xeraze/XDownload
 
@@ -17,6 +17,7 @@
 ## Стек
 
 - React, Vite, Tailwind CSS
+- Иконки - Tabler (интерфейс) и Simple Icons (сервисы) через Iconify, собираются в бандл
 - Go-бэкенд - команда `xcore api` (отдельный репозиторий)
 - Cloudflare Worker - один файл без сборки, `worker/`
 
