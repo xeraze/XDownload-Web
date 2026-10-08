@@ -6,17 +6,8 @@ export default function Hero() {
   const { t } = useTranslation();
 
   return (
-    <section
-      className="relative overflow-hidden pt-16 pb-12 sm:pt-24 sm:pb-16"
-      onMouseMove={(event) => {
-        const rect = event.currentTarget.getBoundingClientRect();
-        event.currentTarget.style.setProperty("--mx", `${event.clientX - rect.left}px`);
-        event.currentTarget.style.setProperty("--my", `${event.clientY - rect.top}px`);
-      }}
-    >
-      <div className="hero-grid pointer-events-none absolute inset-0" aria-hidden="true" />
-      <div className="spotlight pointer-events-none absolute inset-0" aria-hidden="true" />
-      <div className="relative max-w-3xl">
+    <section className="relative pt-12 pb-6 sm:pt-20 sm:pb-10">
+      <div className="max-w-3xl">
         <h1 className="text-4xl font-semibold tracking-tight text-balance sm:text-5xl xl:text-6xl">
           {t("hero.title")}
         </h1>

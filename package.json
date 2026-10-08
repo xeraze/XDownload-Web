@@ -14,7 +14,8 @@
     "lucide-react": "^1.52.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
-    "react-i18next": "^17.0.16"
+    "react-i18next": "^17.0.16",
+    "simple-icons": "^16.34.0"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",

@@ -7,11 +7,13 @@ import Hero from "./components/Hero";
 import Status from "./components/Status";
 import HowItWorks from "./components/HowItWorks";
 import Services from "./components/Services";
+import HowPage from "./components/HowPage";
+import ServicesPage from "./components/ServicesPage";
 import Tool from "./components/Tool";
 import Privacy from "./components/Privacy";
 import Footer from "./components/Footer";
 
-const TOP_ROUTES = ["", "#home", "#download", "#downloads", "#privacy"];
+const TOP_ROUTES = ["", "#home", "#download", "#downloads", "#privacy", "#how", "#services"];
 
 export default function App() {
   const [preview] = useState(() =>
@@ -59,16 +61,33 @@ export default function App() {
       ? "tool"
       : route === "#privacy"
         ? "privacy"
-        : "home";
+        : route === "#how"
+          ? "how"
+          : route === "#services"
+            ? "services"
+            : "home";
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div
+      className="flex min-h-screen flex-col"
+      onMouseMove={(event) => {
+        document.documentElement.style.setProperty("--mx", `${event.clientX}px`);
+        document.documentElement.style.setProperty("--my", `${event.clientY}px`);
+      }}
+    >
+      <div className="page-grid pointer-events-none fixed inset-0 -z-10" aria-hidden="true" />
+      <div className="spotlight pointer-events-none fixed inset-0 -z-10" aria-hidden="true" />
+      <div className="page-grain pointer-events-none fixed inset-0 -z-10" aria-hidden="true" />
       <Header />
       <main className="mx-auto w-full max-w-[2000px] flex-1 px-6 sm:px-10 xl:px-16">
         {view === "tool" ? (
           <Tool state={state} entries={history} onDownloaded={onDownloaded} onClear={onClear} />
         ) : view === "privacy" ? (
           <Privacy />
+        ) : view === "how" ? (
+          <HowPage />
+        ) : view === "services" ? (
+          <ServicesPage />
         ) : (
           <>
             <Hero />
