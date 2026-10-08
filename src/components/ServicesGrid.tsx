@@ -1,4 +1,3 @@
-import type { CSSProperties } from "react";
 import {
   siFacebook,
   siInstagram,
@@ -16,54 +15,75 @@ import {
   type SimpleIcon,
 } from "simple-icons";
 
-const SERVICES: { name: string; icon: SimpleIcon }[] = [
-  { name: "YouTube", icon: siYoutube },
-  { name: "YouTube Music", icon: siYoutubemusic },
-  { name: "Spotify", icon: siSpotify },
-  { name: "SoundCloud", icon: siSoundcloud },
-  { name: "TikTok", icon: siTiktok },
-  { name: "Instagram", icon: siInstagram },
-  { name: "Facebook", icon: siFacebook },
-  { name: "Reddit", icon: siReddit },
-  { name: "Pinterest", icon: siPinterest },
-  { name: "VK", icon: siVk },
-  { name: "X (Twitter)", icon: siX },
-  { name: "Rumble", icon: siRumble },
-  { name: "Snapchat", icon: siSnapchat },
+interface Service {
+  name: string;
+  icon: SimpleIcon;
+  video: boolean;
+}
+
+const SERVICES: Service[] = [
+  { name: "YouTube", icon: siYoutube, video: true },
+  { name: "YouTube Music", icon: siYoutubemusic, video: false },
+  { name: "Spotify", icon: siSpotify, video: false },
+  { name: "SoundCloud", icon: siSoundcloud, video: false },
+  { name: "TikTok", icon: siTiktok, video: true },
+  { name: "Instagram", icon: siInstagram, video: true },
+  { name: "Facebook", icon: siFacebook, video: true },
+  { name: "Reddit", icon: siReddit, video: true },
+  { name: "Pinterest", icon: siPinterest, video: true },
+  { name: "VK", icon: siVk, video: true },
+  { name: "X (Twitter)", icon: siX, video: true },
+  { name: "Rumble", icon: siRumble, video: true },
+  { name: "Snapchat", icon: siSnapchat, video: true },
 ];
 
-function brandStyle(hex: string): CSSProperties {
-  const r = parseInt(hex.slice(0, 2), 16);
-  const g = parseInt(hex.slice(2, 4), 16);
-  const b = parseInt(hex.slice(4, 6), 16);
-  const dark = 0.2126 * r + 0.7152 * g + 0.0722 * b < 70;
-  return {
-    "--brand": `#${hex}`,
-    "--brand-night": dark ? "var(--ink)" : `#${hex}`,
-  } as CSSProperties;
+function Icon({ icon, size = 20 }: { icon: SimpleIcon; size?: number }) {
+  return (
+    <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true" fill="currentColor">
+      <path d={icon.path} />
+    </svg>
+  );
 }
 
 export default function ServicesGrid() {
   return (
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7">
-      {SERVICES.map(({ name, icon }) => (
+      {SERVICES.map(({ name, icon, video }) => (
         <div
           key={name}
-          className="flex items-center gap-3 rounded-2xl border border-[color:var(--line)] bg-[color:var(--chip-bg)] px-4 py-3.5 transition-transform hover:-translate-y-0.5"
+          className="group flex flex-col gap-3 rounded-2xl border border-[color:var(--line)] bg-[color:var(--chip-bg)] px-4 py-4 transition-all hover:-translate-y-0.5 hover:border-[color:var(--glass-border)]"
         >
-          <svg
-            viewBox="0 0 24 24"
-            width="20"
-            height="20"
-            aria-hidden="true"
-            fill="currentColor"
-            className="brand-icon"
-            style={brandStyle(icon.hex)}
-          >
-            <path d={icon.path} />
-          </svg>
-          <span className="truncate text-sm font-medium">{name}</span>
+          <span className="text-[color:var(--ink-soft)] transition-colors group-hover:text-[color:var(--ink)]">
+            <Icon icon={icon} />
+          </span>
+          <span className="text-sm font-medium leading-tight">{name}</span>
+          <span className="flex gap-1.5">
+            {video && (
+              <span className="rounded-md border border-[color:var(--line)] px-1.5 py-0.5 text-[10px] font-medium text-[color:var(--ink-soft)]">
+                MP4
+              </span>
+            )}
+            <span className="rounded-md border border-[color:var(--line)] px-1.5 py-0.5 text-[10px] font-medium text-[color:var(--ink-soft)]">
+              MP3
+            </span>
+          </span>
         </div>
+      ))}
+    </div>
+  );
+}
+
+export function ServicesStrip() {
+  return (
+    <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-[color:var(--ink-soft)]">
+      {SERVICES.map(({ name, icon }) => (
+        <span
+          key={name}
+          className="flex items-center gap-2 transition-colors hover:text-[color:var(--ink)]"
+        >
+          <Icon icon={icon} size={16} />
+          {name}
+        </span>
       ))}
     </div>
   );

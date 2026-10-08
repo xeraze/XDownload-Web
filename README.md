@@ -1,6 +1,6 @@
 # XDownload Web
 
-Веб-интерфейс к XDownload: YouTube, TikTok, Instagram, VK, Spotify — скачивание через yt-dlp на собственном железе.
+Веб-интерфейс к XDownload: YouTube, TikTok, Instagram, VK, Spotify - скачивание через yt-dlp на собственном железе.
 
 Бот и Go-бэкенд живут в основном репозитории: https://github.com/xeraze/XDownload
 
@@ -12,13 +12,13 @@
                      └──> туннель ──> localhost:8080 (xcore api ──> yt-dlp)
 ```
 
-Сайт не хранит файлов. История скачиваний — localStorage браузера, ключ `xdl-history`.
+Сайт не хранит файлов. История скачиваний - localStorage браузера, ключ `xdl-history`.
 
 ## Стек
 
 - React, Vite, Tailwind CSS
-- Go-бэкенд — команда `xcore api` (отдельный репозиторий)
-- Cloudflare Worker — один файл без сборки, `worker/`
+- Go-бэкенд - команда `xcore api` (отдельный репозиторий)
+- Cloudflare Worker - один файл без сборки, `worker/`
 
 ## Локальная разработка
 
@@ -55,4 +55,4 @@ npx wrangler secret put API_KEY    # значение = XDL_API_KEY бэкенд
 ## Лимиты
 
 Воркер: 6 POST/мин на IP (создание задачи), 90 чтений/мин. Лимиты самого
-бэкенда — переменные `XDL_API_*`, см. основной репозиторий.
+бэкенда - переменные `XDL_API_*`, см. основной репозиторий.

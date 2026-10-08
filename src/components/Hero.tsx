@@ -8,7 +8,7 @@ export default function Hero() {
   return (
     <section className="relative pt-12 pb-6 sm:pt-20 sm:pb-10">
       <div className="max-w-3xl">
-        <h1 className="text-4xl font-semibold tracking-tight text-balance sm:text-5xl xl:text-6xl">
+        <h1 className="text-4xl font-semibold tracking-tight text-balance sm:text-5xl xl:text-7xl">
           {t("hero.title")}
         </h1>
         <p className="mt-5 max-w-xl text-lg leading-relaxed text-[color:var(--ink-soft)] text-pretty">

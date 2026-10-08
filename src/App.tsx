@@ -76,6 +76,7 @@ export default function App() {
       }}
     >
       <div className="page-grid pointer-events-none fixed inset-0 -z-10" aria-hidden="true" />
+      <div className="page-grid-glow pointer-events-none fixed inset-0 -z-10" aria-hidden="true" />
       <div className="spotlight pointer-events-none fixed inset-0 -z-10" aria-hidden="true" />
       <div className="page-grain pointer-events-none fixed inset-0 -z-10" aria-hidden="true" />
       <Header />
