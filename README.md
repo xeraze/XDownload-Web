@@ -33,10 +33,9 @@ npm run dev        # http://localhost:5173
 
 ## Деплой
 
-Сайт: push в `main` → GitHub Actions → GitHub Pages.
-
-- `VITE_API_BASE` — переменная репозитория, URL задеплоенного воркера.
-- `BASE_PATH` задаётся в workflow (`/xdownload-web/`).
+Любое изменение → `npm run deploy`. Скрипт соберёт прод-сборку (base и адрес
+API подставляются сами: `vite.config.ts` и `.env.production`) и форс-пушнет
+`dist/` в ветку `gh-pages`, откуда её раздаёт GitHub Pages.
 
 Воркер:
 

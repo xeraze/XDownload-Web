@@ -9,8 +9,8 @@ try {
   apiKey = readFileSync(resolve(process.cwd(), "../XDownload/.api-key"), "utf8").trim();
 } catch {}
 
-export default defineConfig({
-  base: process.env.BASE_PATH || "/",
+export default defineConfig(({ command }) => ({
+  base: process.env.BASE_PATH || (command === "build" ? "/xdownload-web/" : "/"),
   plugins: [react(), tailwindcss()],
   server: {
     proxy: {
@@ -20,4 +20,4 @@ export default defineConfig({
       },
     },
   },
-});
+}));
