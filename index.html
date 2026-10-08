@@ -12,7 +12,7 @@
         var t = m.getUTCHours() * 60 + m.getUTCMinutes();
         var close = d === 5 || d === 6 ? 1290 : 1260;
         document.documentElement.dataset.theme =
-          t < 420 ? "night" : t < 540 ? "morning" : t < close ? "day" : "night";
+          t < 360 ? "night" : t < 480 ? "dawn" : t < 540 ? "morning" : t < close ? "day" : "night";
       })();
     </script>
     <title>XDownload</title>

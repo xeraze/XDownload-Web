@@ -12,6 +12,15 @@ const PALETTES: Record<Theme, Record<string, RGBA>> = {
     "glass-border": [17, 17, 19, 0.08],
     "chip-bg": [17, 17, 19, 0.04],
   },
+  dawn: {
+    bg: [21, 21, 26, 1],
+    ink: [233, 233, 236, 1],
+    "ink-soft": [149, 149, 159, 1],
+    line: [255, 255, 255, 0.09],
+    "glass-bg": [22, 22, 26, 0.7],
+    "glass-border": [255, 255, 255, 0.14],
+    "chip-bg": [255, 255, 255, 0.06],
+  },
   morning: {
     bg: [232, 232, 236, 1],
     ink: [23, 23, 26, 1],
@@ -32,6 +41,8 @@ const PALETTES: Record<Theme, Record<string, RGBA>> = {
   },
 };
 
+const INK_KEYS = new Set(["ink", "ink-soft"]);
+
 function mix(a: RGBA, b: RGBA, t: number): RGBA {
   return [
     a[0] + (b[0] - a[0]) * t,
@@ -49,6 +60,11 @@ function css(c: RGBA): string {
   return `rgba(${r}, ${g}, ${b}, ${Math.round(c[3] * 1000) / 1000})`;
 }
 
+function steep(t: number): number {
+  const x = Math.min(1, Math.max(0, (t - 0.35) / 0.15));
+  return x * x * (3 - 2 * x);
+}
+
 export function applyTheme(state: ScheduleState): void {
   const root = document.documentElement;
   const target = PALETTES[state.theme];
@@ -57,7 +73,8 @@ export function applyTheme(state: ScheduleState): void {
   for (const key of Object.keys(target)) {
     if (state.blend) {
       const source = PALETTES[state.blend.from][key];
-      values[key] = mix(source, target[key], state.blend.t);
+      const k = INK_KEYS.has(key) ? steep(state.blend.t) : state.blend.t;
+      values[key] = mix(source, target[key], k);
     } else {
       values[key] = target[key];
     }

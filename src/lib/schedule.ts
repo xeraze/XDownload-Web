@@ -1,4 +1,4 @@
-export type Theme = "day" | "morning" | "night";
+export type Theme = "day" | "dawn" | "morning" | "night";
 
 export interface ThemeBlend {
   from: Theme;
@@ -13,8 +13,9 @@ export interface ScheduleState {
   opensToday: boolean;
 }
 
+const DAWN_MIN = 6 * 60;
+const MORNING_MIN = 8 * 60;
 const OPEN_MIN = 9 * 60;
-const MORNING_MIN = 7 * 60;
 const EVENING_CLOSE = 21 * 60;
 const EVENING_CLOSE_WEEKEND = 21 * 60 + 30;
 const BLEND_MIN = 30;
@@ -35,7 +36,8 @@ export function scheduleState(now: Date = new Date()): ScheduleState {
   const opensToday = minutes < close;
 
   const windows = [
-    { start: MORNING_MIN - BLEND_MIN, from: "night" as Theme, to: "morning" as Theme },
+    { start: DAWN_MIN - BLEND_MIN, from: "night" as Theme, to: "dawn" as Theme },
+    { start: MORNING_MIN - BLEND_MIN, from: "dawn" as Theme, to: "morning" as Theme },
     { start: OPEN_MIN - BLEND_MIN, from: "morning" as Theme, to: "day" as Theme },
     { start: close - BLEND_MIN, from: "day" as Theme, to: "night" as Theme },
   ];
@@ -48,17 +50,35 @@ export function scheduleState(now: Date = new Date()): ScheduleState {
   }
 
   const theme: Theme =
-    minutes < MORNING_MIN ? "night" : minutes < OPEN_MIN ? "morning" : minutes < close ? "day" : "night";
+    minutes < DAWN_MIN
+      ? "night"
+      : minutes < MORNING_MIN
+        ? "dawn"
+        : minutes < OPEN_MIN
+          ? "morning"
+          : minutes < close
+            ? "day"
+            : "night";
   return { theme, paused, opensToday };
 }
 
 const PREVIEWS: Record<string, ScheduleState> = {
   day: { theme: "day", paused: false, opensToday: true },
+  dawn: { theme: "dawn", paused: true, opensToday: true },
   morning: { theme: "morning", paused: true, opensToday: true },
   night: { theme: "night", paused: true, opensToday: false },
-  dawn: { theme: "morning", blend: { from: "night", to: "morning", t: 0.5 }, paused: true, opensToday: true },
-  sunrise: { theme: "day", blend: { from: "morning", to: "day", t: 0.5 }, paused: true, opensToday: true },
-  dusk: { theme: "night", blend: { from: "day", to: "night", t: 0.5 }, paused: false, opensToday: true },
+  sunrise: {
+    theme: "day",
+    blend: { from: "morning", to: "day", t: 0.5 },
+    paused: true,
+    opensToday: true,
+  },
+  dusk: {
+    theme: "night",
+    blend: { from: "day", to: "night", t: 0.7 },
+    paused: false,
+    opensToday: true,
+  },
 };
 
 export function previewState(param: string | null): ScheduleState | null {

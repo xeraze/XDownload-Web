@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:where([data-theme="night"] *));
+@custom-variant dark (&:where([data-theme="night"], [data-theme="dawn"]) *);
 
 :root {
   --bg: #ffffff;
@@ -20,6 +20,18 @@
   --ink-soft: #5b5b63;
   --glass-bg: rgb(255 255 255 / 0.7);
   --glass-border: rgb(17 17 19 / 0.16);
+}
+
+[data-theme="dawn"] {
+  --bg: #15151a;
+  --ink: #e9e9ec;
+  --ink-soft: #95959f;
+  --line: rgb(255 255 255 / 0.09);
+  --line-strong: rgb(255 255 255 / 0.19);
+  --glass-bg: rgb(22 22 26 / 0.7);
+  --glass-border: rgb(255 255 255 / 0.14);
+  --chip-bg: rgb(255 255 255 / 0.06);
+  color-scheme: dark;
 }
 
 [data-theme="night"] {
@@ -71,7 +83,8 @@ body {
     border-color 0.5s ease;
 }
 
-[data-theme="night"] .glass {
+[data-theme="night"] .glass,
+[data-theme="dawn"] .glass {
   box-shadow:
     0 1px 2px rgb(0 0 0 / 0.4),
     0 12px 40px rgb(0 0 0 / 0.35),
@@ -127,7 +140,8 @@ body {
   );
 }
 
-[data-theme="night"] .spotlight {
+[data-theme="night"] .spotlight,
+[data-theme="dawn"] .spotlight {
   background: radial-gradient(
     560px circle at var(--mx, 50%) var(--my, 30%),
     rgb(255 255 255 / 0.09),
