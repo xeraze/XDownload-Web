@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { previewState, scheduleState, type ScheduleState } from "./lib/schedule";
-import { applyTheme } from "./lib/theme";
 import { addHistory, clearHistory, loadHistory, type DownloadEntry } from "./lib/history";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
@@ -24,7 +23,7 @@ export default function App() {
   const [history, setHistory] = useState<DownloadEntry[]>(() => loadHistory());
 
   useEffect(() => {
-    applyTheme(state);
+    document.documentElement.dataset.theme = state.theme;
   }, [state]);
 
   useEffect(() => {

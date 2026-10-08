@@ -30,14 +30,7 @@ export default function Status({ state }: Props) {
     };
   }, []);
 
-  const soft = state.theme === "morning" || state.theme === "dawn";
-  const blendSoft =
-    state.blend !== undefined &&
-    (state.blend.from === "morning" ||
-      state.blend.from === "dawn" ||
-      state.blend.to === "morning" ||
-      state.blend.to === "dawn");
-  const morningNow = soft || blendSoft;
+  const morningNow = state.theme === "morning" || state.theme === "dawn";
 
   const messageKey = state.paused
     ? morningNow

@@ -23,14 +23,14 @@
 }
 
 [data-theme="dawn"] {
-  --bg: #15151a;
-  --ink: #e9e9ec;
-  --ink-soft: #95959f;
-  --line: rgb(255 255 255 / 0.09);
-  --line-strong: rgb(255 255 255 / 0.19);
-  --glass-bg: rgb(22 22 26 / 0.7);
-  --glass-border: rgb(255 255 255 / 0.14);
-  --chip-bg: rgb(255 255 255 / 0.06);
+  --bg: #171c2a;
+  --ink: #e8ebf4;
+  --ink-soft: #99a2ba;
+  --line: rgb(150 170 240 / 0.1);
+  --line-strong: rgb(150 170 240 / 0.22);
+  --glass-bg: rgb(25 30 46 / 0.72);
+  --glass-border: rgb(150 170 240 / 0.16);
+  --chip-bg: rgb(255 255 255 / 0.07);
   color-scheme: dark;
 }
 
@@ -64,9 +64,6 @@ body {
     Arial,
     sans-serif;
   -webkit-font-smoothing: antialiased;
-  transition:
-    background-color 0.35s ease,
-    color 0.35s ease;
 }
 
 .glass {
@@ -78,9 +75,6 @@ body {
     0 1px 2px rgb(17 17 19 / 0.05),
     0 12px 40px rgb(17 17 19 / 0.07),
     inset 0 1px 0 rgb(255 255 255 / 0.65);
-  transition:
-    background-color 0.5s ease,
-    border-color 0.5s ease;
 }
 
 [data-theme="night"] .glass,
