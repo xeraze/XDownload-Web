@@ -1,4 +1,4 @@
-export type Theme = "day" | "dawn" | "morning" | "night";
+export type Theme = "day" | "morning" | "night";
 
 export interface ScheduleState {
   theme: Theme;
@@ -6,8 +6,7 @@ export interface ScheduleState {
   opensToday: boolean;
 }
 
-const DAWN_MIN = 6 * 60;
-const MORNING_MIN = 8 * 60;
+const MORNING_MIN = 6 * 60;
 const OPEN_MIN = 9 * 60;
 const EVENING_CLOSE = 21 * 60;
 const EVENING_CLOSE_WEEKEND = 21 * 60 + 30;
@@ -22,22 +21,13 @@ export function scheduleState(now: Date = new Date()): ScheduleState {
   const opensToday = minutes < close;
 
   const theme: Theme =
-    minutes < DAWN_MIN
-      ? "night"
-      : minutes < MORNING_MIN
-        ? "dawn"
-        : minutes < OPEN_MIN
-          ? "morning"
-          : minutes < close
-            ? "day"
-            : "night";
+    minutes < MORNING_MIN ? "night" : minutes < OPEN_MIN ? "morning" : minutes < close ? "day" : "night";
 
   return { theme, paused, opensToday };
 }
 
 const PREVIEWS: Record<string, ScheduleState> = {
   day: { theme: "day", paused: false, opensToday: true },
-  dawn: { theme: "dawn", paused: true, opensToday: true },
   morning: { theme: "morning", paused: true, opensToday: true },
   night: { theme: "night", paused: true, opensToday: false },
 };

@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:where([data-theme="night"], [data-theme="dawn"]) *);
+@custom-variant dark (&:where([data-theme="night"] *));
 
 :root {
   --bg: #ffffff;
@@ -15,23 +15,14 @@
 }
 
 [data-theme="morning"] {
-  --bg: #e8e8ec;
-  --ink: #17171a;
-  --ink-soft: #5b5b63;
-  --glass-bg: rgb(255 255 255 / 0.7);
-  --glass-border: rgb(17 17 19 / 0.16);
-}
-
-[data-theme="dawn"] {
-  --bg: #171c2a;
-  --ink: #e8ebf4;
-  --ink-soft: #99a2ba;
-  --line: rgb(150 170 240 / 0.1);
-  --line-strong: rgb(150 170 240 / 0.22);
-  --glass-bg: rgb(25 30 46 / 0.72);
-  --glass-border: rgb(150 170 240 / 0.16);
-  --chip-bg: rgb(255 255 255 / 0.07);
-  color-scheme: dark;
+  --bg: #f6f1e7;
+  --ink: #1c1914;
+  --ink-soft: #6e675b;
+  --line: rgb(28 25 20 / 0.1);
+  --line-strong: rgb(28 25 20 / 0.2);
+  --glass-bg: rgb(255 252 245 / 0.75);
+  --glass-border: rgb(28 25 20 / 0.16);
+  --chip-bg: rgb(28 25 20 / 0.05);
 }
 
 [data-theme="night"] {
@@ -77,8 +68,7 @@ body {
     inset 0 1px 0 rgb(255 255 255 / 0.65);
 }
 
-[data-theme="night"] .glass,
-[data-theme="dawn"] .glass {
+[data-theme="night"] .glass {
   box-shadow:
     0 1px 2px rgb(0 0 0 / 0.4),
     0 12px 40px rgb(0 0 0 / 0.35),
@@ -134,8 +124,7 @@ body {
   );
 }
 
-[data-theme="night"] .spotlight,
-[data-theme="dawn"] .spotlight {
+[data-theme="night"] .spotlight {
   background: radial-gradient(
     560px circle at var(--mx, 50%) var(--my, 30%),
     rgb(255 255 255 / 0.09),

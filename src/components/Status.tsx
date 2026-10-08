@@ -30,7 +30,7 @@ export default function Status({ state }: Props) {
     };
   }, []);
 
-  const morningNow = state.theme === "morning" || state.theme === "dawn";
+  const morningNow = state.theme === "morning";
 
   const messageKey = state.paused
     ? morningNow
