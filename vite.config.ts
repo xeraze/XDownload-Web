@@ -6,12 +6,15 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 let apiKey = "";
-try {
-  apiKey = readFileSync(resolve(process.cwd(), "../XDownload/.api-key"), "utf8").trim();
-} catch {}
+for (const dir of ["../XDownload-Telegram", "../XDownload"]) {
+  try {
+    apiKey = readFileSync(resolve(process.cwd(), dir, ".api-key"), "utf8").trim();
+    break;
+  } catch {}
+}
 
 export default defineConfig(({ command }) => ({
-  base: process.env.BASE_PATH || (command === "build" ? "/xdownload-web/" : "/"),
+  base: process.env.BASE_PATH || (command === "build" ? "/XDownload-Web/" : "/"),
   plugins: [react(), tailwindcss(), Icons({ compiler: "jsx", jsx: "react" })],
   server: {
     proxy: {

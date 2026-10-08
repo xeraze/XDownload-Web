@@ -27,4 +27,4 @@ git("git add -A");
 git('git -c core.autocrlf=false commit --allow-empty -m "deploy"');
 const remote = execSync("git remote get-url origin", { encoding: "utf8" }).trim();
 git(`git push --force "${remote}" gh-pages`);
-console.log("deployed: https://xeraze.github.io/xdownload-web/");
+console.log("deployed: https://xeraze.github.io/XDownload-Web/");

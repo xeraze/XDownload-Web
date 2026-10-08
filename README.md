@@ -1,27 +1,141 @@
-# XDownload (Web Version)
+<div align="center">
+<img src="https://raw.githubusercontent.com/xeraze/XDownload-Telegram/main/assets/xdownload-banner.svg" alt="XDownload" width="760" />
+</div>
 
-Free and ad-free web version of XDownload: 13 services (YouTube, TikTok, Instagram, VK, Spotify and others) - download via yt-dlp on your own hardware. A personal project: no ads, no fees, no accounts.
+Free and ad-free web version of XDownload: download video and audio from 13 services directly in your browser. A personal project: no ads, no fees, no accounts.
 
-The bot and the Go backend live in the main repository: https://github.com/xeraze/XDownload
+Telegram bot and Go backend live in the main repository: https://github.com/xeraze/XDownload-Telegram
 
 ## How it works
 
-```
-browser ──> GitHub Pages (React static site)
-              └──> Cloudflare Worker (CORS, rate limit, X-Api-Key)
-                     └──> tunnel ──> localhost:8080 (xcore api ──> yt-dlp)
-```
+<table>
+  <tr>
+    <th width="25%">Link</th>
+    <th width="25%">Format</th>
+    <th width="25%">Quality</th>
+    <th width="25%">Result</th>
+  </tr>
+  <tr align="center">
+    <td><code>https://…</code></td>
+    <td>Audio (mp3)<br/>Video (mp4)</td>
+    <td>480p<br/>720p<br/>1080p</td>
+    <td><b>file in your browser</b></td>
+  </tr>
+</table>
 
-The site stores no files. Download history lives in browser localStorage, key `xdl-history`.
+> Spotify & SoundCloud are **audio-only** - the site shows only the audio button.
 
-## Stack
+## Platforms
 
-- React, Vite, Tailwind CSS
-- Icons - Tabler (UI) and Simple Icons (services) via Iconify, bundled at build time
-- Go backend - the `xcore api` command (separate repository)
-- Cloudflare Worker - a single file with no build step, `worker/`
+<table>
+  <tr>
+    <td align="center" width="25%">
+      <img src="https://cdn.simpleicons.org/youtube/9CA3AF" width="24" height="24" alt="" /><br/>
+      <b>YouTube</b><br/><sub>video/audio</sub>
+    </td>
+    <td align="center" width="25%">
+      <img src="https://cdn.simpleicons.org/youtubemusic/9CA3AF" width="24" height="24" alt="" /><br/>
+      <b>YouTube Music</b><br/><sub>audio</sub>
+    </td>
+    <td align="center" width="25%">
+      <img src="https://cdn.simpleicons.org/spotify/9CA3AF" width="24" height="24" alt="" /><br/>
+      <b>Spotify</b><br/><sub>audio</sub>
+    </td>
+    <td align="center" width="25%">
+      <img src="https://cdn.simpleicons.org/soundcloud/9CA3AF" width="24" height="24" alt="" /><br/>
+      <b>SoundCloud</b><br/><sub>audio</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="https://cdn.simpleicons.org/tiktok/9CA3AF" width="24" height="24" alt="" /><br/>
+      <b>TikTok</b><br/><sub>video/audio</sub>
+    </td>
+    <td align="center">
+      <img src="https://cdn.simpleicons.org/instagram/9CA3AF" width="24" height="24" alt="" /><br/>
+      <b>Instagram</b><br/><sub>video/audio</sub>
+    </td>
+    <td align="center">
+      <img src="https://cdn.simpleicons.org/facebook/9CA3AF" width="24" height="24" alt="" /><br/>
+      <b>Facebook</b><br/><sub>video/audio</sub>
+    </td>
+    <td align="center">
+      <img src="https://cdn.simpleicons.org/reddit/9CA3AF" width="24" height="24" alt="" /><br/>
+      <b>Reddit</b><br/><sub>video/audio</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="https://cdn.simpleicons.org/pinterest/9CA3AF" width="24" height="24" alt="" /><br/>
+      <b>Pinterest</b><br/><sub>video/audio</sub>
+    </td>
+    <td align="center">
+      <img src="https://cdn.simpleicons.org/vk/9CA3AF" width="24" height="24" alt="" /><br/>
+      <b>VK</b><br/><sub>video/audio</sub>
+    </td>
+    <td align="center">
+      <img src="https://cdn.simpleicons.org/x/9CA3AF" width="24" height="24" alt="" /><br/>
+      <b>Twitter</b><br/><sub>video/audio</sub>
+    </td>
+    <td align="center">
+      <img src="https://cdn.simpleicons.org/rumble/9CA3AF" width="24" height="24" alt="" /><br/>
+      <b>Rumble</b><br/><sub>video/audio</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="https://cdn.simpleicons.org/snapchat/9CA3AF" width="24" height="24" alt="" /><br/>
+      <b>Snapchat</b><br/><sub>video/audio</sub>
+    </td>
+    <td align="center"></td>
+    <td align="center"></td>
+    <td align="center"></td>
+  </tr>
+</table>
 
-## Limits
+<p align="left"><sub>This is a whitelist of platforms supported by the site. If your service is not listed here, XDownload will not be able to extract audio or video from a link posted on an unsupported service.</sub></p>
 
-Worker: 6 POST/min per IP (job creation), 90 reads/min. Backend limits are the
-`XDL_API_*` variables, see the main repository.
+## Features
+
+<table>
+  <tr>
+    <td width="50%">
+      <b>Clean audio</b><br/>
+      <sub>Best available mp3, no quality guessing</sub>
+    </td>
+    <td width="50%">
+      <b>Three qualities</b><br/>
+      <sub>480p · 720p · 1080p per request</sub>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <b>Straight to your browser</b><br/>
+      <sub>No links, no ads, no landing pages</sub>
+    </td>
+    <td>
+      <b>No account</b><br/>
+      <sub>Download history stays in your browser</sub>
+    </td>
+  </tr>
+</table>
+
+## Notes
+
+| | |
+|:--|:--|
+| **Personal use only** | May violate platform ToS |
+| **Restricted media** | Links to private / 18+ / region-restricted video and audio files may not be available for download |
+| **File size** | Up to 2 GB per file |
+| **No storage** | The site keeps no files; download history lives in localStorage |
+| **Rate limit** | 6 downloads per minute per IP |
+
+<div align="center">
+  <img src="src/assets/logo-round.png" alt="XDownload" width="140" />
+</div>
+
+<div align="center">
+  <a href="LICENSE"><sub>License</sub></a>
+  <sub> · </sub>
+  <a href="https://xeraze.github.io/XDownload-Web/#privacy"><sub>Privacy Policy</sub></a>
+</div>
