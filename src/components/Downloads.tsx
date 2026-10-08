@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Download, HardDrive, Trash2 } from "lucide-react";
+import IconDownload from "~icons/tabler/download";
+import IconDatabase from "~icons/tabler/database";
+import IconTrash from "~icons/tabler/trash";
 import { fileHref } from "../lib/api";
 import { formatSize } from "../lib/format";
 import type { DownloadEntry } from "../lib/history";
@@ -57,7 +59,7 @@ export default function Downloads({ entries, onClear }: Props) {
             onClick={onClear}
             className="inline-flex items-center gap-2 rounded-full border border-[color:var(--line)] px-4 py-2 text-xs text-[color:var(--ink-soft)] transition-all hover:border-[color:var(--ink-soft)] active:scale-[0.98]"
           >
-            <Trash2 size={14} />
+            <IconTrash width={14} height={14} />
             {t("downloads.clear")}
           </button>
         )}
@@ -65,7 +67,7 @@ export default function Downloads({ entries, onClear }: Props) {
 
       {entries.length === 0 ? (
         <div className="glass mt-8 flex flex-col items-center gap-3 rounded-3xl px-6 py-14 text-center">
-          <HardDrive size={24} className="text-[color:var(--ink-soft)]" />
+          <IconDatabase width={24} height={24} className="text-[color:var(--ink-soft)]" />
           <p className="text-sm text-[color:var(--ink-soft)]">{t("downloads.empty")}</p>
         </div>
       ) : (
@@ -76,7 +78,7 @@ export default function Downloads({ entries, onClear }: Props) {
               className="flex items-center gap-4 rounded-2xl border border-[color:var(--line)] bg-[color:var(--chip-bg)] px-5 py-4"
             >
               <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[color:var(--line)]">
-                <Download size={15} />
+                <IconDownload width={15} height={15} />
               </span>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-medium">{entry.name}</p>

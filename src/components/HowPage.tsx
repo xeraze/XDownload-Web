@@ -1,19 +1,24 @@
 import { useTranslation } from "react-i18next";
-import { Link, Video, Download, FileVideo, HardDrive, History } from "lucide-react";
+import IconDownload from "~icons/tabler/download";
+import IconHistory from "~icons/tabler/history";
+import IconLink from "~icons/tabler/link";
+import IconDatabase from "~icons/tabler/database";
+import IconPhotoVideo from "~icons/tabler/photo-video";
+import IconVideo from "~icons/tabler/video";
 
 export default function HowPage() {
   const { t } = useTranslation();
 
   const steps = [
-    { icon: Link, title: t("how.s1t"), text: t("how.s1d") },
-    { icon: Video, title: t("how.s2t"), text: t("how.s2d") },
-    { icon: Download, title: t("how.s3t"), text: t("how.s3d") },
+    { icon: IconLink, title: t("how.s1t"), text: t("how.s1d") },
+    { icon: IconVideo, title: t("how.s2t"), text: t("how.s2d") },
+    { icon: IconDownload, title: t("how.s3t"), text: t("how.s3d") },
   ];
 
   const blocks = [
-    { icon: FileVideo, title: t("how.fmtT"), text: t("how.fmtD") },
-    { icon: HardDrive, title: t("how.storT"), text: t("how.storD") },
-    { icon: History, title: t("how.histT"), text: t("how.histD") },
+    { icon: IconPhotoVideo, title: t("how.fmtT"), text: t("how.fmtD") },
+    { icon: IconDatabase, title: t("how.storT"), text: t("how.storD") },
+    { icon: IconHistory, title: t("how.histT"), text: t("how.histD") },
   ];
 
   const faq = [
@@ -38,7 +43,7 @@ export default function HowPage() {
               className="flex items-start gap-5 rounded-3xl border border-[color:var(--line)] bg-[color:var(--chip-bg)] p-6 sm:p-8"
             >
               <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-[color:var(--line)]">
-                <StepIcon size={20} />
+                <StepIcon width={20} height={20} />
               </span>
               <div>
                 <span className="text-xs font-medium text-[color:var(--ink-soft)]">
@@ -63,7 +68,7 @@ export default function HowPage() {
               className="rounded-3xl border border-[color:var(--line)] bg-[color:var(--chip-bg)] p-6"
             >
               <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--line)]">
-                <BlockIcon size={16} />
+                <BlockIcon width={16} height={16} />
               </span>
               <h3 className="mt-4 font-medium">{block.title}</h3>
               <p className="mt-2 text-sm leading-relaxed text-[color:var(--ink-soft)]">

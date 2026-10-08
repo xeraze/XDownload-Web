@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Activity, Moon } from "lucide-react";
+import IconActivity from "~icons/tabler/activity";
+import IconMoon from "~icons/tabler/moon";
 import { fetchHealth } from "../lib/api";
 import type { ScheduleState } from "../lib/schedule";
 
@@ -55,7 +56,7 @@ export default function Status({ state }: Props) {
             (healthy ? "text-emerald-600 dark:text-emerald-400" : "text-[color:var(--ink-soft)]")
           }
         >
-          {state.paused ? <Moon size={18} /> : <Activity size={18} className={healthy ? "animate-pulse" : ""} />}
+          {state.paused ? <IconMoon width={18} height={18} /> : <IconActivity width={18} height={18} className={healthy ? "animate-pulse" : ""} />}
         </span>
         <div>
           <h2 className="text-sm font-semibold">{t("status.title")}</h2>

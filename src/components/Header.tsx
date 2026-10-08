@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { setLanguage } from "../i18n";
-import logoUrl from "../assets/logo.png";
+import logoUrl from "../assets/transparent-logo.png";
 
 export default function Header() {
   const { t, i18n } = useTranslation();

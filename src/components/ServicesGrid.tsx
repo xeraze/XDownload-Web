@@ -1,48 +1,44 @@
-import {
-  siFacebook,
-  siInstagram,
-  siPinterest,
-  siReddit,
-  siRumble,
-  siSnapchat,
-  siSoundcloud,
-  siSpotify,
-  siTiktok,
-  siVk,
-  siX,
-  siYoutube,
-  siYoutubemusic,
-  type SimpleIcon,
-} from "simple-icons";
+import type { ComponentType, SVGProps } from "react";
+import IconFacebook from "~icons/simple-icons/facebook";
+import IconInstagram from "~icons/simple-icons/instagram";
+import IconPinterest from "~icons/simple-icons/pinterest";
+import IconReddit from "~icons/simple-icons/reddit";
+import IconRumble from "~icons/simple-icons/rumble";
+import IconSnapchat from "~icons/simple-icons/snapchat";
+import IconSoundcloud from "~icons/simple-icons/soundcloud";
+import IconSpotify from "~icons/simple-icons/spotify";
+import IconTiktok from "~icons/simple-icons/tiktok";
+import IconVk from "~icons/simple-icons/vk";
+import IconX from "~icons/simple-icons/x";
+import IconYoutube from "~icons/simple-icons/youtube";
+import IconYoutubemusic from "~icons/simple-icons/youtubemusic";
+
+type IconComponent = ComponentType<SVGProps<SVGSVGElement>>;
 
 interface Service {
   name: string;
-  icon: SimpleIcon;
+  icon: IconComponent;
   video: boolean;
 }
 
 const SERVICES: Service[] = [
-  { name: "YouTube", icon: siYoutube, video: true },
-  { name: "YouTube Music", icon: siYoutubemusic, video: false },
-  { name: "Spotify", icon: siSpotify, video: false },
-  { name: "SoundCloud", icon: siSoundcloud, video: false },
-  { name: "TikTok", icon: siTiktok, video: true },
-  { name: "Instagram", icon: siInstagram, video: true },
-  { name: "Facebook", icon: siFacebook, video: true },
-  { name: "Reddit", icon: siReddit, video: true },
-  { name: "Pinterest", icon: siPinterest, video: true },
-  { name: "VK", icon: siVk, video: true },
-  { name: "X (Twitter)", icon: siX, video: true },
-  { name: "Rumble", icon: siRumble, video: true },
-  { name: "Snapchat", icon: siSnapchat, video: true },
+  { name: "YouTube", icon: IconYoutube, video: true },
+  { name: "YouTube Music", icon: IconYoutubemusic, video: false },
+  { name: "Spotify", icon: IconSpotify, video: false },
+  { name: "SoundCloud", icon: IconSoundcloud, video: false },
+  { name: "TikTok", icon: IconTiktok, video: true },
+  { name: "Instagram", icon: IconInstagram, video: true },
+  { name: "Facebook", icon: IconFacebook, video: true },
+  { name: "Reddit", icon: IconReddit, video: true },
+  { name: "Pinterest", icon: IconPinterest, video: true },
+  { name: "VK", icon: IconVk, video: true },
+  { name: "X (Twitter)", icon: IconX, video: true },
+  { name: "Rumble", icon: IconRumble, video: true },
+  { name: "Snapchat", icon: IconSnapchat, video: true },
 ];
 
-function Icon({ icon, size = 20 }: { icon: SimpleIcon; size?: number }) {
-  return (
-    <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true" fill="currentColor">
-      <path d={icon.path} />
-    </svg>
-  );
+function Icon({ icon: Comp, size = 20 }: { icon: IconComponent; size?: number }) {
+  return <Comp width={size} height={size} aria-hidden="true" />;
 }
 
 export default function ServicesGrid() {

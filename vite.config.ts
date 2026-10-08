@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
+import Icons from "unplugin-icons/vite";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
@@ -11,7 +12,7 @@ try {
 
 export default defineConfig(({ command }) => ({
   base: process.env.BASE_PATH || (command === "build" ? "/xdownload-web/" : "/"),
-  plugins: [react(), tailwindcss()],
+  plugins: [react(), tailwindcss(), Icons({ compiler: "jsx", jsx: "react" })],
   server: {
     proxy: {
       "/api": {

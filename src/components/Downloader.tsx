@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { AlertCircle, ArrowLeft, CheckCircle2, Download, Loader2, Music, Video } from "lucide-react";
+import IconAlertCircle from "~icons/tabler/alert-circle";
+import IconArrowLeft from "~icons/tabler/arrow-left";
+import IconCircleCheck from "~icons/tabler/circle-check";
+import IconDownload from "~icons/tabler/download";
+import IconLoader2 from "~icons/tabler/loader-2";
+import IconMusic from "~icons/tabler/music";
+import IconVideo from "~icons/tabler/video";
 import { ApiError, createJob, fileHref, getJob } from "../lib/api";
 import { FIELD, PRIMARY, SECONDARY } from "../lib/buttons";
 import { formatSize } from "../lib/format";
@@ -185,11 +191,11 @@ export default function Downloader({ state, onDownloaded }: Props) {
                 setPhase("quality");
               }}
             >
-              <Video size={16} />
+              <IconVideo width={16} height={16} />
               {t("dl.video")}
             </button>
             <button type="button" className={SECONDARY} onClick={() => start("mp3")}>
-              <Music size={16} />
+              <IconMusic width={16} height={16} />
               {t("dl.audio")}
             </button>
           </div>
@@ -205,7 +211,7 @@ export default function Downloader({ state, onDownloaded }: Props) {
               onClick={() => setPhase("format")}
               className="flex shrink-0 items-center gap-1 text-sm text-[color:var(--ink-soft)] transition-colors hover:text-[color:var(--ink)]"
             >
-              <ArrowLeft size={14} />
+              <IconArrowLeft width={14} height={14} />
               {t("dl.back")}
             </button>
           </div>
@@ -235,7 +241,7 @@ export default function Downloader({ state, onDownloaded }: Props) {
               />
             </div>
           ) : (
-            <Loader2 size={28} className="animate-spin" />
+            <IconLoader2 width={28} height={28} className="animate-spin" />
           )}
           <p className="text-sm text-[color:var(--ink-soft)]">{t("dl.working")}</p>
         </div>
@@ -243,7 +249,7 @@ export default function Downloader({ state, onDownloaded }: Props) {
 
       {phase === "done" && file && (
         <div className="flex flex-col items-center gap-4 py-4 text-center">
-          <CheckCircle2 size={28} className="text-emerald-600 dark:text-emerald-400" />
+          <IconCircleCheck width={28} height={28} className="text-emerald-600 dark:text-emerald-400" />
           <div>
             <p className="font-medium">{file.name}</p>
             {formatSize(file.size) && (
@@ -253,7 +259,7 @@ export default function Downloader({ state, onDownloaded }: Props) {
           <div className="flex flex-wrap justify-center gap-3">
             {jobId && (
               <a href={fileHref(jobId)} target="_blank" rel="noreferrer" className={PRIMARY}>
-                <Download size={16} />
+                <IconDownload width={16} height={16} />
                 {t("dl.save")}
               </a>
             )}
@@ -266,11 +272,11 @@ export default function Downloader({ state, onDownloaded }: Props) {
 
       {phase === "error" && (
         <div className="flex flex-col items-center gap-4 py-4 text-center">
-          <AlertCircle size={28} className="text-[color:var(--ink-soft)]" />
+          <IconAlertCircle width={28} height={28} className="text-[color:var(--ink-soft)]" />
           <p className="text-sm text-[color:var(--ink-soft)]">{errorMessage}</p>
           <div className="flex flex-wrap justify-center gap-3">
             <button type="button" className={PRIMARY} onClick={reset}>
-              <ArrowLeft size={16} />
+              <IconArrowLeft width={16} height={16} />
               {t("dl.retry")}
             </button>
           </div>

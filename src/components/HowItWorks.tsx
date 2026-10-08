@@ -1,13 +1,15 @@
 import { useTranslation } from "react-i18next";
-import { Link, Video, Download } from "lucide-react";
+import IconDownload from "~icons/tabler/download";
+import IconLink from "~icons/tabler/link";
+import IconVideo from "~icons/tabler/video";
 
 export default function HowItWorks() {
   const { t } = useTranslation();
 
   const steps = [
-    { icon: Link, title: t("how.s1t") },
-    { icon: Video, title: t("how.s2t") },
-    { icon: Download, title: t("how.s3t") },
+    { icon: IconLink, title: t("how.s1t") },
+    { icon: IconVideo, title: t("how.s2t") },
+    { icon: IconDownload, title: t("how.s3t") },
   ];
 
   return (
@@ -26,7 +28,7 @@ export default function HowItWorks() {
             >
               <div className="flex items-center gap-3">
                 <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--line)]">
-                  <StepIcon size={16} />
+                  <StepIcon width={16} height={16} />
                 </span>
                 <span className="text-xs font-medium text-[color:var(--ink-soft)]">
                   {String(index + 1).padStart(2, "0")}
