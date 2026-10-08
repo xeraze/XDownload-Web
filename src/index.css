@@ -1,0 +1,119 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where([data-theme="night"] *));
+
+:root {
+  --bg: #ffffff;
+  --ink: #111113;
+  --ink-soft: #63636b;
+  --line: rgb(17 17 19 / 0.08);
+  --glass-bg: rgb(255 255 255 / 0.72);
+  --glass-border: rgb(17 17 19 / 0.08);
+  --chip-bg: rgb(17 17 19 / 0.04);
+  color-scheme: light;
+}
+
+[data-theme="morning"] {
+  --bg: #e8e8ec;
+  --ink: #17171a;
+  --ink-soft: #5b5b63;
+  --glass-bg: rgb(255 255 255 / 0.55);
+  --glass-border: rgb(17 17 19 / 0.1);
+}
+
+[data-theme="night"] {
+  --bg: #0b0b0d;
+  --ink: #f2f2f4;
+  --ink-soft: #a0a0aa;
+  --line: rgb(255 255 255 / 0.1);
+  --glass-bg: rgb(24 24 27 / 0.66);
+  --glass-border: rgb(255 255 255 / 0.09);
+  --chip-bg: rgb(255 255 255 / 0.06);
+  color-scheme: dark;
+}
+
+html {
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  transition:
+    background-color 0.35s ease,
+    color 0.35s ease;
+}
+
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--glass-border);
+  transition:
+    background-color 0.5s ease,
+    border-color 0.5s ease;
+}
+
+.hero-grid {
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 52px 52px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 65% at 50% 35%, black 25%, transparent 75%);
+  mask-image: radial-gradient(ellipse 70% 65% at 50% 35%, black 25%, transparent 75%);
+  animation: grid-drift 70s linear infinite;
+}
+
+@keyframes grid-drift {
+  from {
+    background-position:
+      0 0,
+      0 0;
+  }
+  to {
+    background-position:
+      52px 52px,
+      52px 52px;
+  }
+}
+
+.spotlight {
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, 30%),
+    rgb(17 17 19 / 0.05),
+    transparent 72%
+  );
+}
+
+[data-theme="night"] .spotlight {
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, 30%),
+    rgb(255 255 255 / 0.06),
+    transparent 72%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .hero-grid {
+    animation: none;
+  }
+}
