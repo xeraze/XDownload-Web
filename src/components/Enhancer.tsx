@@ -5,9 +5,11 @@ import IconImage from "~icons/tabler/photo";
 import IconSparkles from "~icons/tabler/sparkles";
 import { EnhanceError, enhanceImage } from "../lib/api";
 import { PRIMARY } from "../lib/buttons";
+import Compare from "./Compare";
 
 type Engine = "local" | "ai";
-type Mode = "clean" | "x2";
+type Mode = "clean" | "x2" | "x4";
+type Dims = { ow: number; oh: number; rw: number; rh: number };
 
 const seg = (active: boolean) =>
   `rounded-2xl px-4 py-2.5 text-sm font-medium transition-all ${
@@ -24,12 +26,15 @@ export default function Enhancer() {
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [errorKey, setErrorKey] = useState<string | null>(null);
+  const [cmp, setCmp] = useState<Dims | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const previewRef = useRef<string | null>(null);
+  const origRef = useRef<string | null>(null);
 
   useEffect(() => {
     return () => {
       if (previewRef.current) URL.revokeObjectURL(previewRef.current);
+      if (origRef.current) URL.revokeObjectURL(origRef.current);
     };
   }, []);
 
@@ -39,14 +44,17 @@ export default function Enhancer() {
       URL.revokeObjectURL(previewRef.current);
       previewRef.current = null;
     }
+    if (origRef.current) URL.revokeObjectURL(origRef.current);
+    origRef.current = URL.createObjectURL(f);
     setResult(null);
     setErrorKey(null);
+    setCmp(null);
     setFile(f);
   };
 
   const chooseEngine = (next: Engine) => {
     setEngine(next);
-    if (next === "ai") setMode("x2");
+    if (next === "ai" && mode === "clean") setMode("x2");
   };
 
   const start = async () => {
@@ -59,6 +67,19 @@ export default function Enhancer() {
       if (previewRef.current) URL.revokeObjectURL(previewRef.current);
       previewRef.current = url;
       setResult(url);
+      setCmp(null);
+      const load = (src: string) =>
+        new Promise<{ w: number; h: number }>((resolve) => {
+          const img = new Image();
+          img.onload = () => resolve({ w: img.naturalWidth, h: img.naturalHeight });
+          img.onerror = () => resolve({ w: 0, h: 0 });
+          img.src = src;
+        });
+      const [o, r] = await Promise.all([
+        load(origRef.current ?? url),
+        load(url),
+      ]);
+      setCmp({ ow: o.w, oh: o.h, rw: r.w, rh: r.h });
     } catch (err) {
       const status = err instanceof EnhanceError ? err.status : 0;
       setErrorKey(
@@ -128,20 +149,25 @@ export default function Enhancer() {
             </button>
           </div>
 
-          <div
-            className={
-              "flex flex-wrap gap-3 " + (engine === "ai" ? "pointer-events-none opacity-50" : "")
-            }
-          >
-            <button type="button" className={seg(mode === "clean")} onClick={() => setMode("clean")}>
-              {t("enh.modeClean")}
-            </button>
+          <div className="flex flex-wrap gap-3">
+            {engine === "local" && (
+              <button type="button" className={seg(mode === "clean")} onClick={() => setMode("clean")}>
+                {t("enh.modeClean")}
+              </button>
+            )}
             <button type="button" className={seg(mode === "x2")} onClick={() => setMode("x2")}>
               {t("enh.modeX2")}
             </button>
+            <button type="button" className={seg(mode === "x4")} onClick={() => setMode("x4")}>
+              {t("enh.modeX4")}
+            </button>
           </div>
           <p className="text-sm text-[color:var(--ink-soft)]">
-            {engine === "ai" || mode === "x2" ? t("enh.hintX2") : t("enh.hintClean")}
+            {mode === "clean"
+              ? t("enh.hintClean")
+              : mode === "x4"
+                ? t("enh.hintX4")
+                : t("enh.hintX2")}
           </p>
 
           {busy ? (
@@ -152,11 +178,15 @@ export default function Enhancer() {
             </div>
           ) : result ? (
             <>
-              <img
-                src={result}
-                alt={t("enh.title")}
-                className="max-h-80 w-full rounded-2xl border border-[color:var(--line)] object-contain"
-              />
+              {cmp && origRef.current ? (
+                <Compare original={origRef.current} result={result} dims={cmp} alt={t("enh.title")} />
+              ) : (
+                <img
+                  src={result}
+                  alt={t("enh.title")}
+                  className="max-h-80 w-full rounded-2xl border border-[color:var(--line)] object-contain"
+                />
+              )}
               <div className="flex flex-wrap justify-center gap-3">
                 <button type="button" className={PRIMARY} onClick={download}>
                   <IconDownload width={16} height={16} />
@@ -168,6 +198,7 @@ export default function Enhancer() {
                   onClick={() => {
                     setResult(null);
                     setErrorKey(null);
+                    setCmp(null);
                   }}
                 >
                   {t("enh.again")}

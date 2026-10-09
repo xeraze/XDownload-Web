@@ -31,6 +31,7 @@ const (
 	partsMax        = 12
 	enhanceMaxDim   = 6000
 	enhanceMaxX2In  = 3000
+	enhanceMaxX4In  = 1500
 )
 
 var workerClient = &http.Client{Timeout: 90 * time.Second}
@@ -147,13 +148,13 @@ func enhanceBytes(raw []byte, mode, engine string) (image.Image, string, int, st
 	if engine == "" {
 		engine = "local"
 	}
-	if mode != "clean" && mode != "x2" {
+	if mode != "clean" && mode != "x2" && mode != "x4" {
 		return nil, "", http.StatusBadRequest, "invalid mode"
 	}
 	if engine != "local" && engine != "ai" {
 		return nil, "", http.StatusBadRequest, "invalid engine"
 	}
-	if engine == "ai" {
+	if engine == "ai" && mode == "clean" {
 		mode = "x2"
 	}
 	if len(raw) == 0 {
@@ -172,9 +173,15 @@ func enhanceBytes(raw []byte, mode, engine string) (image.Image, string, int, st
 	if mode == "x2" && (inW > enhanceMaxX2In || inH > enhanceMaxX2In) {
 		return nil, "", http.StatusBadRequest, "x2 input too large"
 	}
+	if mode == "x4" && (inW > enhanceMaxX4In || inH > enhanceMaxX4In) {
+		return nil, "", http.StatusBadRequest, "x4 input too large"
+	}
 	targetW, targetH := inW, inH
 	if mode == "x2" {
 		targetW, targetH = inW*2, inH*2
+	}
+	if mode == "x4" {
+		targetW, targetH = inW*4, inH*4
 	}
 
 	var out image.Image
@@ -397,6 +404,9 @@ func localEnhance(src image.Image, mode string, targetW, targetH int) image.Imag
 		return rgba
 	}
 	up := lanczos2x(rgba)
+	if mode == "x4" {
+		up = lanczos2x(up)
+	}
 	unsharp(up, 0.4, 1)
 	if up.Bounds().Dx() != targetW || up.Bounds().Dy() != targetH {
 		return resizeTo(up, targetW, targetH)

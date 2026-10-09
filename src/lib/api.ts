@@ -106,7 +106,7 @@ async function getUploadPart(fileID: string, index: number): Promise<Blob> {
 
 async function enhanceImageBig(
   file: File,
-  mode: "clean" | "x2",
+  mode: "clean" | "x2" | "x4",
   engine: "local" | "ai",
 ): Promise<Blob> {
   const fileID = crypto.randomUUID().toLowerCase();
@@ -133,7 +133,7 @@ async function enhanceImageBig(
 
 export async function enhanceImage(
   file: File,
-  mode: "clean" | "x2",
+  mode: "clean" | "x2" | "x4",
   engine: "local" | "ai",
 ): Promise<Blob> {
   if (file.size > SMALL_MAX) return enhanceImageBig(file, mode, engine);
