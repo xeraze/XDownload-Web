@@ -9,6 +9,7 @@
   --line: rgb(17 17 19 / 0.08);
   --line-strong: rgb(17 17 19 / 0.18);
   --glass-bg: rgb(255 255 255 / 0.78);
+  --glass-bg-solid: rgb(255 255 255 / 0.94);
   --glass-border: rgb(17 17 19 / 0.14);
   --chip-bg: rgb(17 17 19 / 0.04);
   color-scheme: light;
@@ -21,6 +22,7 @@
   --line: rgb(28 25 20 / 0.1);
   --line-strong: rgb(28 25 20 / 0.2);
   --glass-bg: rgb(255 252 245 / 0.75);
+  --glass-bg-solid: rgb(255 252 245 / 0.94);
   --glass-border: rgb(28 25 20 / 0.16);
   --chip-bg: rgb(28 25 20 / 0.05);
 }
@@ -32,6 +34,7 @@
   --line: rgb(255 255 255 / 0.1);
   --line-strong: rgb(255 255 255 / 0.2);
   --glass-bg: rgb(24 24 27 / 0.72);
+  --glass-bg-solid: rgb(24 24 27 / 0.94);
   --glass-border: rgb(255 255 255 / 0.16);
   --chip-bg: rgb(255 255 255 / 0.06);
   color-scheme: dark;
@@ -135,6 +138,33 @@ body {
 .page-grain {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
   background-repeat: repeat;
+}
+
+main > section,
+footer {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 700px;
+}
+
+footer {
+  contain-intrinsic-size: auto 240px;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .glass {
+    background: var(--glass-bg-solid);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .page-grid {
+    animation: none;
+  }
+
+  .page-grid-glow,
+  .spotlight {
+    display: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

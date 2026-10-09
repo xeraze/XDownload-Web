@@ -75,7 +75,7 @@ export function ServicesStrip() {
       {SERVICES.map(({ name, icon }) => (
         <span
           key={name}
-          className="flex items-center gap-2 transition-colors hover:text-[color:var(--ink)]"
+          className="flex items-center gap-2 rounded-full border border-[color:var(--line)] bg-[color:var(--chip-bg)] px-3 py-1.5 text-sm text-[color:var(--ink-soft)] transition-colors hover:border-[color:var(--glass-border)] hover:text-[color:var(--ink)]"
         >
           <Icon icon={icon} size={16} />
           {name}

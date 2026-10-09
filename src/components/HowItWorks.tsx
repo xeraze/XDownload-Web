@@ -24,14 +24,17 @@ export default function HowItWorks() {
             <a
               key={step.title}
               href="#how"
-              className="group rounded-3xl border border-[color:var(--line)] bg-[color:var(--chip-bg)] p-6 transition-all hover:-translate-y-0.5 hover:border-[color:var(--glass-border)]"
+              className="group relative overflow-hidden rounded-3xl border border-[color:var(--line)] bg-[color:var(--chip-bg)] p-6 transition-all hover:-translate-y-0.5 hover:border-[color:var(--glass-border)]"
             >
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute -top-4 right-3 text-6xl font-semibold tracking-tight text-[color:var(--line-strong)] select-none"
+              >
+                {String(index + 1).padStart(2, "0")}
+              </span>
               <div className="flex items-center gap-3">
                 <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--line)]">
                   <StepIcon width={16} height={16} />
-                </span>
-                <span className="text-xs font-medium text-[color:var(--ink-soft)]">
-                  {String(index + 1).padStart(2, "0")}
                 </span>
               </div>
               <h3 className="mt-4 font-medium">{step.title}</h3>

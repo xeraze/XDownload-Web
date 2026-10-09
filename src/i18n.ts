@@ -8,6 +8,7 @@ const resources = {
         how: "Как это работает",
         services: "Сервисы",
         download: "Скачать",
+        menu: "Меню",
       },
       tool: {
         title: "Скачать файл",
@@ -109,6 +110,7 @@ const resources = {
         how: "How it works",
         services: "Services",
         download: "Download",
+        menu: "Menu",
       },
       tool: {
         title: "Download a file",
