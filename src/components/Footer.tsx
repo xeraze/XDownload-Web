@@ -11,11 +11,12 @@ export default function Footer() {
         <div className="flex flex-wrap items-center gap-5">
           <span className="font-medium text-[color:var(--ink)]">{t("footer.contacts")}</span>
           <a
-            href="https://t.me/xdlabot"
+            href="https://t.me/xerazetg"
             target="_blank"
             rel="noreferrer"
             className="transition-colors hover:text-[color:var(--ink)]"
           >
+            t.me/xerazetg
           </a>
           <a href="#privacy" className="transition-colors hover:text-[color:var(--ink)]">
             {t("footer.privacy")}

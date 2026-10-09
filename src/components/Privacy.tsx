@@ -14,6 +14,19 @@ export default function Privacy() {
             <h2 className="text-base font-semibold">{t(`privacy.${key}h`)}</h2>
             <p className="mt-2 text-sm leading-relaxed text-[color:var(--ink-soft)]">
               {t(`privacy.${key}p`)}
+              {key === "s6" && (
+                <>
+                  {" "}
+                  <a
+                    href="https://t.me/xerazetg"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="underline decoration-dotted underline-offset-2 transition-colors hover:text-[color:var(--ink)]"
+                  >
+                    t.me/xerazetg
+                  </a>
+                </>
+              )}
             </p>
           </div>
         ))}

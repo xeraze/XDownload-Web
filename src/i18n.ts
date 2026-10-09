@@ -86,7 +86,6 @@ const resources = {
       },
       footer: {
         note: "XDownload не хранит твои файлы - скачивание идёт напрямую к тебе.",
-        bot: "XDownload Telegram Bot",
         contacts: "Контакты",
         privacy: "Приватность",
       },
@@ -103,7 +102,7 @@ const resources = {
         s5h: "Ответственность",
         s5p: "Весь контент отправляемый из ссылок, соблюдение правил площадок (YouTube, TikTok, Instagram и других) и требования авторского права в своей юрисдикции лежит исключительно на ответственности пользователя. Сервис только для личного использования.",
         s6h: "Контакты",
-        s6p: "Вопросы по политике - в Telegram: t.me/xerazetg.",
+        s6p: "Вопросы по политике - в Telegram:",
       },
     },
   },
@@ -191,7 +190,6 @@ const resources = {
       },
       footer: {
         note: "XDownload does not store your files - downloads go straight to you.",
-        bot: "Telegram Bot",
         contacts: "Contacts",
         privacy: "Privacy",
       },
@@ -208,7 +206,7 @@ const resources = {
         s5h: "Your responsibility",
         s5p: "You are responsible for the content of the links you submit, for complying with the platforms' terms (YouTube, TikTok, Instagram and others) and with copyright law in your jurisdiction. The service is for personal use only.",
         s6h: "Contact",
-        s6p: "Questions about this policy - on Telegram: t.me/xerazetg.",
+        s6p: "Questions about this policy - on Telegram:",
       },
     },
   },
