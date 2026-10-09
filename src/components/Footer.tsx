@@ -16,7 +16,6 @@ export default function Footer() {
             rel="noreferrer"
             className="transition-colors hover:text-[color:var(--ink)]"
           >
-            {t("footer.bot")} · t.me/xdlabot
           </a>
           <a href="#privacy" className="transition-colors hover:text-[color:var(--ink)]">
             {t("footer.privacy")}

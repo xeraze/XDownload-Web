@@ -2,7 +2,7 @@
 <img src="https://raw.githubusercontent.com/xeraze/XDownload-Telegram/main/assets/xdownload-banner.svg" alt="XDownload" width="760" />
 </div>
 
-Free and ad-free web version of XDownload: download video and audio from 13 services directly in your browser. A personal project: no ads, no fees, no accounts.
+Web version of XDownload: download video and audio from 13 services directly in your browser. A personal project: no ads, no fees, no accounts.
 
 Telegram bot and Go backend live in the main repository: https://github.com/xeraze/XDownload-Telegram
 

@@ -8,6 +8,7 @@ dist/
 .dev.vars
 *.tsbuildinfo
 *.log
+*.ps1
 .DS_Store
 Thumbs.db
 .env.producton
