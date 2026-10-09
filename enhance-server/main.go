@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"context"
 	"crypto/hmac"
+	"crypto/rand"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -17,14 +19,29 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
+	"strings"
 	"time"
 )
 
 const (
 	enhanceMaxBytes = 15 << 20
+	enhanceBigBytes = 120 << 20
+	partMaxBytes    = 10 << 20
+	partsMax        = 12
 	enhanceMaxDim   = 6000
 	enhanceMaxX2In  = 3000
 )
+
+var workerClient = &http.Client{Timeout: 90 * time.Second}
+
+func workerBase() string {
+	w := os.Getenv("ENHANCE_WORKER")
+	if w == "" {
+		w = "https://xdownload-api.xeraze-official.workers.dev"
+	}
+	return strings.TrimRight(w, "/")
+}
 
 var (
 	errEnhanceToolMissing = errors.New("realesrgan missing")
@@ -41,6 +58,7 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /api/health", handleHealth)
 	mux.HandleFunc("POST /api/enhance", handleEnhance)
+	mux.HandleFunc("POST /api/enhance-big", handleEnhanceBig)
 
 	var handler http.Handler = mux
 	if key != "" {
@@ -96,26 +114,6 @@ func handleEnhance(w http.ResponseWriter, r *http.Request) {
 	}
 	defer fh.Close()
 
-	mode := r.FormValue("mode")
-	engine := r.FormValue("engine")
-	if mode == "" {
-		mode = "clean"
-	}
-	if engine == "" {
-		engine = "local"
-	}
-	if mode != "clean" && mode != "x2" {
-		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid mode"})
-		return
-	}
-	if engine != "local" && engine != "ai" {
-		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid engine"})
-		return
-	}
-	if engine == "ai" {
-		mode = "x2"
-	}
-
 	raw, err := io.ReadAll(io.LimitReader(fh, enhanceMaxBytes+1))
 	if err != nil || len(raw) == 0 {
 		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "read failed"})
@@ -126,20 +124,53 @@ func handleEnhance(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	out, format, status, msg := enhanceBytes(raw, r.FormValue("mode"), r.FormValue("engine"))
+	if status != 0 {
+		writeJSON(w, status, map[string]string{"error": msg})
+		return
+	}
+	body, ct, status, msg := encodeEnhanced(out, format)
+	if status != 0 {
+		writeJSON(w, status, map[string]string{"error": msg})
+		return
+	}
+	w.Header().Set("Content-Type", ct)
+	w.Header().Set("Content-Length", fmt.Sprintf("%d", len(body)))
+	w.Header().Set("X-Enhance-Engine", r.FormValue("engine"))
+	_, _ = w.Write(body)
+}
+
+func enhanceBytes(raw []byte, mode, engine string) (image.Image, string, int, string) {
+	if mode == "" {
+		mode = "clean"
+	}
+	if engine == "" {
+		engine = "local"
+	}
+	if mode != "clean" && mode != "x2" {
+		return nil, "", http.StatusBadRequest, "invalid mode"
+	}
+	if engine != "local" && engine != "ai" {
+		return nil, "", http.StatusBadRequest, "invalid engine"
+	}
+	if engine == "ai" {
+		mode = "x2"
+	}
+	if len(raw) == 0 {
+		return nil, "", http.StatusBadRequest, "read failed"
+	}
+
 	img, format, err := image.Decode(bytes.NewReader(raw))
 	if err != nil || (format != "jpeg" && format != "png") {
-		writeJSON(w, http.StatusUnsupportedMediaType, map[string]string{"error": "jpeg or png required"})
-		return
+		return nil, "", http.StatusUnsupportedMediaType, "jpeg or png required"
 	}
 	b := img.Bounds()
 	inW, inH := b.Dx(), b.Dy()
 	if inW > enhanceMaxDim || inH > enhanceMaxDim || inW < 16 || inH < 16 {
-		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "unsupported dimensions"})
-		return
+		return nil, "", http.StatusBadRequest, "unsupported dimensions"
 	}
 	if mode == "x2" && (inW > enhanceMaxX2In || inH > enhanceMaxX2In) {
-		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "x2 input too large"})
-		return
+		return nil, "", http.StatusBadRequest, "x2 input too large"
 	}
 	targetW, targetH := inW, inH
 	if mode == "x2" {
@@ -152,40 +183,177 @@ func handleEnhance(w http.ResponseWriter, r *http.Request) {
 		data, err := realESRGANEnhance(raw)
 		if err != nil {
 			if errors.Is(err, errEnhanceToolMissing) {
-				writeJSON(w, http.StatusServiceUnavailable, map[string]string{"error": "ai unavailable"})
-				return
+				return nil, "", http.StatusServiceUnavailable, "ai unavailable"
 			}
-			writeJSON(w, http.StatusBadGateway, map[string]string{"error": "ai failed"})
-			return
+			return nil, "", http.StatusBadGateway, "ai failed"
 		}
 		res, _, err := image.Decode(bytes.NewReader(data))
 		if err != nil {
-			writeJSON(w, http.StatusBadGateway, map[string]string{"error": "ai decode failed"})
-			return
+			return nil, "", http.StatusBadGateway, "ai decode failed"
 		}
-		out = resizeTo(res, targetW, targetH)
+		out = lanczosResize(res, targetW, targetH)
 	default:
 		out = localEnhance(img, mode, targetW, targetH)
 	}
+	return out, format, 0, ""
+}
 
+func encodeEnhanced(out image.Image, format string) ([]byte, string, int, string) {
 	buf := &bytes.Buffer{}
 	ct := "image/jpeg"
 	if format == "png" {
 		ct = "image/png"
-		if err := png.Encode(buf, out); err != nil {
-			writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "encode failed"})
-			return
+		enc := png.Encoder{CompressionLevel: png.BestSpeed}
+		if err := enc.Encode(buf, out); err != nil {
+			return nil, "", http.StatusInternalServerError, "encode failed"
 		}
 	} else {
 		if err := jpeg.Encode(buf, out, &jpeg.Options{Quality: 90}); err != nil {
-			writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "encode failed"})
+			return nil, "", http.StatusInternalServerError, "encode failed"
+		}
+	}
+	return buf.Bytes(), ct, 0, ""
+}
+
+func validID(s string) bool {
+	if len(s) < 8 || len(s) > 64 {
+		return false
+	}
+	for _, c := range s {
+		if c != '-' && (c < '0' || c > '9') && (c < 'a' || c > 'z') && (c < 'A' || c > 'Z') {
+			return false
+		}
+	}
+	return true
+}
+
+func randomHex(n int) string {
+	b := make([]byte, n)
+	_, _ = rand.Read(b)
+	return hex.EncodeToString(b)
+}
+
+func fetchPart(fileID string, i int) ([]byte, error) {
+	url := workerBase() + "/api/enhance-part/" + fileID + "/" + strconv.Itoa(i)
+	var lastErr error
+	for attempt := 0; attempt < 8; attempt++ {
+		if attempt > 0 {
+			time.Sleep(1500 * time.Millisecond)
+		}
+		resp, err := workerClient.Get(url)
+		if err != nil {
+			lastErr = err
+			continue
+		}
+		if resp.StatusCode == http.StatusOK {
+			data, err := io.ReadAll(io.LimitReader(resp.Body, partMaxBytes+1))
+			resp.Body.Close()
+			if err != nil {
+				lastErr = err
+				continue
+			}
+			return data, nil
+		}
+		resp.Body.Close()
+		if resp.StatusCode == http.StatusNotFound {
+			lastErr = fmt.Errorf("part %d not ready", i)
+			continue
+		}
+		return nil, fmt.Errorf("part %d: status %d", i, resp.StatusCode)
+	}
+	return nil, lastErr
+}
+
+func putPart(fileID string, i int, data []byte) error {
+	url := workerBase() + "/api/enhance-part/" + fileID + "/" + strconv.Itoa(i)
+	var lastErr error
+	for attempt := 0; attempt < 3; attempt++ {
+		if attempt > 0 {
+			time.Sleep(time.Second)
+		}
+		req, err := http.NewRequest(http.MethodPut, url, bytes.NewReader(data))
+		if err != nil {
+			return err
+		}
+		req.Header.Set("Content-Type", "application/octet-stream")
+		resp, err := workerClient.Do(req)
+		if err != nil {
+			lastErr = err
+			continue
+		}
+		resp.Body.Close()
+		if resp.StatusCode == http.StatusOK {
+			return nil
+		}
+		lastErr = fmt.Errorf("put part %d: status %d", i, resp.StatusCode)
+	}
+	return lastErr
+}
+
+func handleEnhanceBig(w http.ResponseWriter, r *http.Request) {
+	select {
+	case sem <- struct{}{}:
+		defer func() { <-sem }()
+	default:
+		writeJSON(w, http.StatusTooManyRequests, map[string]string{"error": "busy"})
+		return
+	}
+
+	r.Body = http.MaxBytesReader(w, r.Body, 4096)
+	var req struct {
+		FileID string `json:"fileId"`
+		Parts  int    `json:"parts"`
+		Mode   string `json:"mode"`
+		Engine string `json:"engine"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid json"})
+		return
+	}
+	if !validID(req.FileID) || req.Parts < 1 || req.Parts > partsMax {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid upload"})
+		return
+	}
+
+	raw := make([]byte, 0, req.Parts*partMaxBytes)
+	for i := 0; i < req.Parts; i++ {
+		part, err := fetchPart(req.FileID, i)
+		if err != nil {
+			writeJSON(w, http.StatusBadGateway, map[string]string{"error": "assemble failed"})
+			return
+		}
+		raw = append(raw, part...)
+		if len(raw) > enhanceBigBytes {
+			writeJSON(w, http.StatusRequestEntityTooLarge, map[string]string{"error": "image too big"})
 			return
 		}
 	}
-	w.Header().Set("Content-Type", ct)
-	w.Header().Set("Content-Length", fmt.Sprintf("%d", buf.Len()))
-	w.Header().Set("X-Enhance-Engine", engine)
-	_, _ = w.Write(buf.Bytes())
+
+	out, format, status, msg := enhanceBytes(raw, req.Mode, req.Engine)
+	if status != 0 {
+		writeJSON(w, status, map[string]string{"error": msg})
+		return
+	}
+	body, ct, status, msg := encodeEnhanced(out, format)
+	if status != 0 {
+		writeJSON(w, status, map[string]string{"error": msg})
+		return
+	}
+	resultParts := (len(body) + partMaxBytes - 1) / partMaxBytes
+	if resultParts > partsMax {
+		writeJSON(w, http.StatusRequestEntityTooLarge, map[string]string{"error": "result too big"})
+		return
+	}
+	resultID := randomHex(16)
+	for i := 0; i < resultParts; i++ {
+		start := i * partMaxBytes
+		end := min(start+partMaxBytes, len(body))
+		if err := putPart(resultID, i, body[start:end]); err != nil {
+			writeJSON(w, http.StatusBadGateway, map[string]string{"error": "result store failed"})
+			return
+		}
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"resultId": resultID, "parts": resultParts, "type": ct})
 }
 
 func realESRGANEnhance(src []byte) ([]byte, error) {
@@ -209,7 +377,7 @@ func realESRGANEnhance(src []byte) ([]byte, error) {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 4*time.Minute)
 	defer cancel()
-	cmd := exec.CommandContext(ctx, exe, "-i", inPath, "-o", outPath, "-n", "realesrgan-x4plus", "-s", "2", "-f", "png")
+	cmd := exec.CommandContext(ctx, exe, "-i", inPath, "-o", outPath, "-n", "realesrgan-x4plus", "-s", "4", "-f", "png")
 	cmd.Dir = dir
 	output, err := cmd.CombinedOutput()
 	if err != nil {
@@ -370,6 +538,19 @@ func lanczosKernel(t float64) float64 {
 	}
 	pt := math.Pi * t
 	return (3 * math.Sin(pt) * math.Sin(pt/3)) / (pt * pt)
+}
+
+func lanczosResize(src image.Image, tw, th int) image.Image {
+	rgba := toRGBA(src)
+	if tw <= 0 || th <= 0 {
+		return rgba
+	}
+	b := rgba.Bounds()
+	if b.Dx() == tw && b.Dy() == th {
+		return rgba
+	}
+	mid := lanczosResample(rgba, tw, b.Dy(), false)
+	return lanczosResample(mid, tw, th, true)
 }
 
 func lanczos2x(src *image.RGBA) *image.RGBA {

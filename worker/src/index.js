@@ -14,6 +14,9 @@ const PASS = [
 
 const FWD = ["range", "if-range", "content-type"];
 
+const PART_MAX = 10 * 1024 * 1024;
+const PARTS_MAX = 12;
+
 const buckets = new Map();
 
 function allow(key, max) {
@@ -35,7 +38,7 @@ function allow(key, max) {
 function corsHeaders(origin) {
   return {
     "Access-Control-Allow-Origin": origin,
-    "Access-Control-Allow-Methods": "GET, HEAD, POST, OPTIONS",
+    "Access-Control-Allow-Methods": "GET, HEAD, POST, PUT, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type, Range",
     "Access-Control-Max-Age": "86400",
     Vary: "Origin",
@@ -76,6 +79,40 @@ export default {
     const ip = request.headers.get("cf-connecting-ip") || "unknown";
     if (!allow(`${write ? "w" : "r"}:${ip}`, write ? WRITE_MAX : READ_MAX)) {
       return new Response("Too many requests", { status: 429 });
+    }
+
+    const partMatch = url.pathname.match(/^\/api\/enhance-part\/([A-Za-z0-9-]{8,64})\/(\d{1,2})$/);
+    if (partMatch) {
+      if (!env.UPLOADS) return new Response("Misconfigured", { status: 500 });
+      const idx = Number(partMatch[2]);
+      if (idx >= PARTS_MAX) return new Response("Bad part", { status: 400 });
+      const key = `p:${partMatch[1]}:${idx}`;
+      const withCors = (headers) => {
+        if (allowedOrigin) merge(headers, corsHeaders(allowedOrigin));
+        return headers;
+      };
+      if (request.method === "PUT") {
+        const buf = await request.arrayBuffer();
+        if (buf.byteLength === 0 || buf.byteLength > PART_MAX) {
+          return new Response("Bad size", { status: 413 });
+        }
+        await env.UPLOADS.put(key, buf, { expirationTtl: 1200 });
+        return new Response(JSON.stringify({ ok: true, size: buf.byteLength }), {
+          status: 200,
+          headers: withCors(new Headers({ "content-type": "application/json" })),
+        });
+      }
+      if (request.method === "GET") {
+        const value = await env.UPLOADS.get(key, "arrayBuffer");
+        if (value === null) return new Response("Not found", { status: 404 });
+        return new Response(value, {
+          status: 200,
+          headers: withCors(
+            new Headers({ "content-type": "application/octet-stream", "cache-control": "no-store" }),
+          ),
+        });
+      }
+      return new Response("Method not allowed", { status: 405 });
     }
 
     if (!env.ORIGIN) {

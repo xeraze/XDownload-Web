@@ -3,6 +3,10 @@ main = "src/index.js"
 compatibility_date = "2026-10-01"
 
 [vars]
-ORIGIN = "https://qfbcq7-ip-45-132-93-33.tunnelmole.net"
-ENHANCE_ORIGIN = "https://kteyrz-ip-45-132-93-33.tunnelmole.net"
+ORIGIN = "https://nzthgb-ip-45-132-93-33.tunnelmole.net"
+ENHANCE_ORIGIN = ""
 SITE_ORIGIN = "https://xeraze.github.io/XDownload-Web"
+
+[[kv_namespaces]]
+binding = "UPLOADS"
+id = "b5688e2db2f8412a9b32e92446426e60"
