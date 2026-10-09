@@ -4,17 +4,16 @@ import IconAlertCircle from "~icons/tabler/alert-circle";
 import IconArrowLeft from "~icons/tabler/arrow-left";
 import IconCircleCheck from "~icons/tabler/circle-check";
 import IconDownload from "~icons/tabler/download";
-import IconLoader2 from "~icons/tabler/loader-2";
 import IconMusic from "~icons/tabler/music";
 import IconVideo from "~icons/tabler/video";
 import { ApiError, createJob, fileHref, getJob } from "../lib/api";
 import { FIELD, PRIMARY, SECONDARY } from "../lib/buttons";
 import { formatSize } from "../lib/format";
 import type { DownloadEntry } from "../lib/history";
-import type { ScheduleState } from "../lib/schedule";
+import { announceOpens, openAnnounce, type ScheduleState } from "../lib/schedule";
 
 type Phase = "idle" | "format" | "quality" | "working" | "done" | "error";
-type ErrorKey = "offline" | "unsupported" | "generic" | "pauseToday" | "pauseTomorrow";
+type ErrorKey = "offline" | "unsupported" | "generic" | "pause";
 
 interface Props {
   state: ScheduleState;
@@ -22,7 +21,7 @@ interface Props {
 }
 
 export default function Downloader({ state, onDownloaded }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [phase, setPhase] = useState<Phase>("idle");
   const [url, setUrl] = useState("");
   const [jobId, setJobId] = useState<string | null>(null);
@@ -31,7 +30,7 @@ export default function Downloader({ state, onDownloaded }: Props) {
   const [errorKey, setErrorKey] = useState<ErrorKey>("generic");
 
   const pauseError = () => {
-    setErrorKey(state.opensToday ? "pauseToday" : "pauseTomorrow");
+    setErrorKey("pause");
     setPhase("error");
   };
 
@@ -134,22 +133,21 @@ export default function Downloader({ state, onDownloaded }: Props) {
     };
   }, [jobId, phase]);
 
+  const announce = openAnnounce(state, i18n.resolvedLanguage === "en" ? "en" : "ru");
   const errorMessage =
-    errorKey === "pauseToday"
-      ? t("status.pauseToday")
-      : errorKey === "pauseTomorrow"
-        ? t("status.pauseTomorrow")
-        : errorKey === "offline"
-          ? t("dl.errOffline")
-          : errorKey === "unsupported"
-            ? t("dl.errUnsupported")
-            : t("dl.errGeneric");
+    errorKey === "pause"
+      ? t("status.pause", { opens: announce ? announceOpens(t, announce) : "" })
+      : errorKey === "offline"
+        ? t("dl.errOffline")
+        : errorKey === "unsupported"
+          ? t("dl.errUnsupported")
+          : t("dl.errGeneric");
 
   return (
     <div className="glass rounded-3xl p-6 transition-colors focus-within:border-[color:var(--ink-soft)] sm:p-8">
       {phase === "idle" && (
         <form
-          className="flex flex-col gap-3 sm:flex-row"
+          className="phase-in flex flex-col gap-3 sm:flex-row"
           onSubmit={(event) => {
             event.preventDefault();
             submit();
@@ -171,7 +169,7 @@ export default function Downloader({ state, onDownloaded }: Props) {
       )}
 
       {phase === "format" && (
-        <div>
+        <div className="phase-in">
           <div className="flex items-center justify-between gap-4">
             <span className="truncate text-sm text-[color:var(--ink-soft)]">{url}</span>
             <button
@@ -203,7 +201,7 @@ export default function Downloader({ state, onDownloaded }: Props) {
       )}
 
       {phase === "quality" && (
-        <div>
+        <div className="phase-in">
           <div className="flex items-center justify-between gap-4">
             <span className="truncate text-sm text-[color:var(--ink-soft)]">{url}</span>
             <button
@@ -232,23 +230,30 @@ export default function Downloader({ state, onDownloaded }: Props) {
       )}
 
       {phase === "working" && (
-        <div className="flex flex-col items-center gap-4 py-6 text-center">
-          {progress !== null ? (
-            <div className="h-1.5 w-full max-w-sm overflow-hidden rounded-full bg-[color:var(--chip-bg)]">
+        <div className="phase-in py-2">
+          {progress === null ? (
+            <div className="flex flex-col items-center gap-3" aria-hidden="true">
+              <div className="skeleton h-4 w-2/3 rounded-full" />
+              <div className="skeleton h-4 w-1/2 rounded-full" />
+              <div className="mt-2 flex justify-center gap-3">
+                <div className="skeleton h-10 w-32 rounded-2xl" />
+                <div className="skeleton h-10 w-32 rounded-2xl" />
+              </div>
+            </div>
+          ) : (
+            <div className="mx-auto h-1.5 w-full max-w-sm overflow-hidden rounded-full bg-[color:var(--chip-bg)]">
               <div
                 className="h-full rounded-full bg-neutral-900 transition-all dark:bg-white"
                 style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
               />
             </div>
-          ) : (
-            <IconLoader2 width={28} height={28} className="animate-spin" />
           )}
-          <p className="text-sm text-[color:var(--ink-soft)]">{t("dl.working")}</p>
+          <p className="mt-4 text-center text-sm text-[color:var(--ink-soft)]">{t("dl.working")}</p>
         </div>
       )}
 
       {phase === "done" && file && (
-        <div className="flex flex-col items-center gap-4 py-4 text-center">
+        <div className="phase-in flex flex-col items-center gap-4 py-4 text-center">
           <IconCircleCheck width={28} height={28} className="text-emerald-600 dark:text-emerald-400" />
           <div>
             <p className="font-medium">{file.name}</p>
@@ -271,7 +276,7 @@ export default function Downloader({ state, onDownloaded }: Props) {
       )}
 
       {phase === "error" && (
-        <div className="flex flex-col items-center gap-4 py-4 text-center">
+        <div className="phase-in flex flex-col items-center gap-4 py-4 text-center">
           <IconAlertCircle width={28} height={28} className="text-[color:var(--ink-soft)]" />
           <p className="text-sm text-[color:var(--ink-soft)]">{errorMessage}</p>
           <div className="flex flex-wrap justify-center gap-3">

@@ -3,14 +3,14 @@ import { useTranslation } from "react-i18next";
 import IconActivity from "~icons/tabler/activity";
 import IconMoon from "~icons/tabler/moon";
 import { fetchHealth } from "../lib/api";
-import type { ScheduleState } from "../lib/schedule";
+import { announceOpens, openAnnounce, type ScheduleState } from "../lib/schedule";
 
 interface Props {
   state: ScheduleState;
 }
 
 export default function Status({ state }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [online, setOnline] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -32,13 +32,12 @@ export default function Status({ state }: Props) {
   }, []);
 
   const morningNow = state.theme === "morning";
+  const announce = openAnnounce(state, i18n.resolvedLanguage === "en" ? "en" : "ru");
 
   const messageKey = state.paused
     ? morningNow
       ? "status.morning"
-      : state.opensToday
-        ? "status.pauseToday"
-        : "status.pauseTomorrow"
+      : "status.pause"
     : online === null
       ? "status.checking"
       : online
@@ -60,7 +59,11 @@ export default function Status({ state }: Props) {
         </span>
         <div>
           <h2 className="text-sm font-semibold">{t("status.title")}</h2>
-          <p className="text-sm text-[color:var(--ink-soft)]">{t(messageKey)}</p>
+          <p className="text-sm text-[color:var(--ink-soft)]">
+            {state.paused && announce
+              ? t(messageKey, { opens: announceOpens(t, announce) })
+              : t(messageKey)}
+          </p>
         </div>
       </div>
     </section>

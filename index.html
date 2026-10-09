@@ -23,9 +23,19 @@
     <link rel="icon" type="image/png" href="./src/assets/logo-round.png" />
     <script>
       (function () {
-        var m = new Date(Date.now() + 10800000);
-        var d = m.getUTCDay();
-        var t = m.getUTCHours() * 60 + m.getUTCMinutes();
+        var parts = new Intl.DateTimeFormat("en-US", {
+          timeZone: "Europe/Kyiv",
+          hourCycle: "h23",
+          weekday: "short",
+          hour: "2-digit",
+          minute: "2-digit",
+        }).formatToParts(new Date());
+        var get = function (type) {
+          for (var i = 0; i < parts.length; i += 1) if (parts[i].type === type) return parts[i].value;
+          return "";
+        };
+        var d = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 }[get("weekday")];
+        var t = parseInt(get("hour"), 10) * 60 + parseInt(get("minute"), 10);
         var close = d === 5 || d === 6 ? 1290 : 1260;
         document.documentElement.dataset.theme =
           t < 360 ? "night" : t < 540 ? "morning" : t < close ? "day" : "night";

@@ -12,6 +12,7 @@
   --glass-bg-solid: rgb(255 255 255 / 0.94);
   --glass-border: rgb(17 17 19 / 0.14);
   --chip-bg: rgb(17 17 19 / 0.04);
+  --focus-ring: rgb(17 17 19 / 0.12);
   color-scheme: light;
 }
 
@@ -25,6 +26,7 @@
   --glass-bg-solid: rgb(255 252 245 / 0.94);
   --glass-border: rgb(28 25 20 / 0.16);
   --chip-bg: rgb(28 25 20 / 0.05);
+  --focus-ring: rgb(28 25 20 / 0.14);
 }
 
 [data-theme="night"] {
@@ -37,6 +39,7 @@
   --glass-bg-solid: rgb(24 24 27 / 0.94);
   --glass-border: rgb(255 255 255 / 0.16);
   --chip-bg: rgb(255 255 255 / 0.06);
+  --focus-ring: rgb(255 255 255 / 0.16);
   color-scheme: dark;
 }
 
@@ -140,6 +143,36 @@ body {
   background-repeat: repeat;
 }
 
+.phase-in {
+  animation: phase-in 0.28s ease-out;
+}
+
+@keyframes phase-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--chip-bg) 25%, var(--line) 50%, var(--chip-bg) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
 main > section,
 footer {
   content-visibility: auto;
@@ -162,7 +195,8 @@ footer {
   }
 
   .page-grid-glow,
-  .spotlight {
+  .spotlight,
+  .page-grain {
     display: none;
   }
 }

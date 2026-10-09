@@ -13,6 +13,7 @@ import Privacy from "./components/Privacy";
 import Footer from "./components/Footer";
 
 const TOP_ROUTES = ["", "#home", "#download", "#downloads", "#privacy", "#how", "#services"];
+const FINE_POINTER = window.matchMedia("(pointer: fine)").matches;
 
 export default function App() {
   const [preview] = useState(() =>
@@ -70,6 +71,7 @@ export default function App() {
     <div
       className="flex min-h-screen flex-col"
       onMouseMove={(event) => {
+        if (!FINE_POINTER) return;
         document.documentElement.style.setProperty("--mx", `${event.clientX}px`);
         document.documentElement.style.setProperty("--my", `${event.clientY}px`);
       }}
