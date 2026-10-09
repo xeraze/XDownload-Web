@@ -12,7 +12,7 @@ const PASS = [
   "last-modified",
 ];
 
-const FWD = ["range", "if-range"];
+const FWD = ["range", "if-range", "content-type"];
 
 const buckets = new Map();
 
@@ -81,6 +81,8 @@ export default {
     if (!env.ORIGIN) {
       return new Response("Misconfigured", { status: 502 });
     }
+    const enhance = url.pathname === "/api/enhance";
+    const target = enhance ? env.ENHANCE_ORIGIN || env.ORIGIN : env.ORIGIN;
 
     const headers = new Headers();
     headers.set("X-Api-Key", env.API_KEY || "");
@@ -89,7 +91,7 @@ export default {
       if (value) headers.set(name, value);
     }
 
-    const upstream = await fetch(new URL(url.pathname + url.search, env.ORIGIN), {
+    const upstream = await fetch(new URL(url.pathname + url.search, target), {
       method: request.method,
       headers,
       body: request.method === "GET" || request.method === "HEAD" ? undefined : request.body,

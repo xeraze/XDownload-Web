@@ -57,6 +57,33 @@ export function fileHref(id: string): string {
 
 const CHUNK = 8 * 1024 * 1024;
 
+export class EnhanceError extends Error {
+  status: number;
+
+  constructor(status: number) {
+    super(`enhance ${status}`);
+    this.status = status;
+  }
+}
+
+export async function enhanceImage(
+  file: File,
+  mode: "clean" | "x2",
+  engine: "local" | "ai",
+): Promise<Blob> {
+  const form = new FormData();
+  form.append("file", file);
+  form.append("mode", mode);
+  form.append("engine", engine);
+  const response = await fetch(`${base}/api/enhance`, {
+    method: "POST",
+    body: form,
+    signal: AbortSignal.timeout(95_000),
+  });
+  if (!response.ok) throw new EnhanceError(response.status);
+  return response.blob();
+}
+
 export async function saveFile(
   id: string,
   name: string,

@@ -56,6 +56,12 @@ export default function Header() {
             {t("nav.services")}
           </a>
           <a
+            href="#enhance"
+            className="hidden text-[color:var(--ink-soft)] transition-colors hover:text-[color:var(--ink)] sm:block"
+          >
+            {t("nav.enhance")}
+          </a>
+          <a
             href="#download"
             className="rounded-full bg-[color:var(--ink)] px-4 py-1.5 text-xs font-medium text-[color:var(--bg)] transition-all hover:opacity-85 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--ink)]"
           >
@@ -87,6 +93,13 @@ export default function Header() {
               className="block border-t border-[color:var(--line)] py-3 text-sm text-[color:var(--ink-soft)] transition-colors hover:text-[color:var(--ink)]"
             >
               {t("nav.services")}
+            </a>
+            <a
+              href="#enhance"
+              onClick={() => setOpen(false)}
+              className="block border-t border-[color:var(--line)] py-3 text-sm text-[color:var(--ink-soft)] transition-colors hover:text-[color:var(--ink)]"
+            >
+              {t("nav.enhance")}
             </a>
             <div className="border-t border-[color:var(--line)] py-3">{langSwitch("always")}</div>
           </div>

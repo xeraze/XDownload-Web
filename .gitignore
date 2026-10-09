@@ -9,6 +9,8 @@ dist/
 *.tsbuildinfo
 *.log
 *.ps1
+tools/
+enhance-server/*.exe
 .DS_Store
 Thumbs.db
 .env.producton
