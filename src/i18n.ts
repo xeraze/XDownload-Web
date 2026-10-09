@@ -43,6 +43,7 @@ const resources = {
         errOffline: "Сервер недоступен - попробуйте позже.",
         errUnsupported: "Эта ссылка не поддерживается.",
         errGeneric: "Не удалось скачать - попробуйте другую ссылку.",
+        saveErr: "Не удалось скачать файл - попробуйте ещё раз.",
       },
       status: {
         title: "Статус сервиса",
@@ -147,6 +148,7 @@ const resources = {
         errOffline: "Server unavailable - try again later.",
         errUnsupported: "This link isn't supported.",
         errGeneric: "Download failed - try another link.",
+        saveErr: "Download failed - try again.",
       },
       status: {
         title: "Service status",

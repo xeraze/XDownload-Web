@@ -5,11 +5,14 @@ const PASS = [
   "content-type",
   "content-disposition",
   "content-length",
+  "content-range",
   "accept-ranges",
   "cache-control",
   "etag",
   "last-modified",
 ];
+
+const FWD = ["range", "if-range"];
 
 const buckets = new Map();
 
@@ -33,7 +36,7 @@ function corsHeaders(origin) {
   return {
     "Access-Control-Allow-Origin": origin,
     "Access-Control-Allow-Methods": "GET, HEAD, POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Headers": "Content-Type, Range",
     "Access-Control-Max-Age": "86400",
     Vary: "Origin",
   };
@@ -81,6 +84,10 @@ export default {
 
     const headers = new Headers();
     headers.set("X-Api-Key", env.API_KEY || "");
+    for (const name of FWD) {
+      const value = request.headers.get(name);
+      if (value) headers.set(name, value);
+    }
 
     const upstream = await fetch(new URL(url.pathname + url.search, env.ORIGIN), {
       method: request.method,

@@ -6,7 +6,7 @@ import IconCircleCheck from "~icons/tabler/circle-check";
 import IconDownload from "~icons/tabler/download";
 import IconMusic from "~icons/tabler/music";
 import IconVideo from "~icons/tabler/video";
-import { ApiError, createJob, fileHref, getJob } from "../lib/api";
+import { ApiError, createJob, fileHref, getJob, saveFile } from "../lib/api";
 import { FIELD, PRIMARY, SECONDARY } from "../lib/buttons";
 import { formatSize } from "../lib/format";
 import type { DownloadEntry } from "../lib/history";
@@ -28,6 +28,8 @@ export default function Downloader({ state, onDownloaded }: Props) {
   const [progress, setProgress] = useState<number | null>(null);
   const [file, setFile] = useState<{ name: string; size?: number } | null>(null);
   const [errorKey, setErrorKey] = useState<ErrorKey>("generic");
+  const [saving, setSaving] = useState<number | null>(null);
+  const [saveErr, setSaveErr] = useState(false);
 
   const pauseError = () => {
     setErrorKey("pause");
@@ -86,6 +88,29 @@ export default function Downloader({ state, onDownloaded }: Props) {
     setJobId(null);
     setProgress(null);
     setFile(null);
+    setSaving(null);
+    setSaveErr(false);
+  };
+
+  const save = async () => {
+    if (!jobId || !file || saving !== null) return;
+    setSaveErr(false);
+    if (!file.size) {
+      window.location.href = fileHref(jobId);
+      return;
+    }
+    const total = file.size;
+    const fname = file.name;
+    setSaving(0);
+    try {
+      await saveFile(jobId, fname, total, (_received, totalBytes) => {
+        setSaving(Math.round((_received / totalBytes) * 100));
+      });
+    } catch {
+      setSaveErr(true);
+    } finally {
+      setSaving(null);
+    }
   };
 
   useEffect(() => {
@@ -263,15 +288,16 @@ export default function Downloader({ state, onDownloaded }: Props) {
           </div>
           <div className="flex flex-wrap justify-center gap-3">
             {jobId && (
-              <a href={fileHref(jobId)} target="_blank" rel="noreferrer" className={PRIMARY}>
+              <button type="button" className={PRIMARY} onClick={() => void save()} disabled={saving !== null}>
                 <IconDownload width={16} height={16} />
-                {t("dl.save")}
-              </a>
+                {saving === null ? t("dl.save") : `${saving}%`}
+              </button>
             )}
             <button type="button" className={SECONDARY} onClick={reset}>
               {t("dl.again")}
             </button>
           </div>
+          {saveErr && <p className="text-sm text-red-500">{t("dl.saveErr")}</p>}
         </div>
       )}
 
