@@ -88,7 +88,7 @@ export function ServicesMarquee() {
               <span className="font-display text-2xl font-semibold tracking-tight text-[color:var(--ink)] uppercase transition-colors group-hover:text-[color:var(--brand)] sm:text-3xl">
                 {name}
               </span>
-              <span aria-hidden="true" className="text-[color:var(--accent)]">
+              <span aria-hidden="true" className="text-[color:var(--ink-soft)]">
                 ✦
               </span>
             </span>
@@ -103,7 +103,7 @@ export function ServicesMarquee() {
               style={{ "--brand": color } as CSSProperties}
               className="group flex shrink-0 items-center gap-3 pr-10"
             >
-              <span aria-hidden="true" className="text-[color:var(--accent-2)]">
+              <span aria-hidden="true" className="text-[color:var(--ink-soft)]">
                 ✦
               </span>
               <Icon icon={icon} size={16} />

@@ -49,11 +49,6 @@
   --glass-border: rgb(17 17 19 / 0.14);
   --chip-bg: rgb(17 17 19 / 0.04);
   --focus-ring: rgb(17 17 19 / 0.12);
-  --accent: #7c3aed;
-  --accent-strong: #6d28d9;
-  --accent-2: #ec4899;
-  --accent-ink: #ffffff;
-  --accent-soft: rgb(124 58 237 / 0.1);
   color-scheme: light;
 }
 
@@ -68,10 +63,6 @@
   --glass-border: rgb(28 25 20 / 0.16);
   --chip-bg: rgb(28 25 20 / 0.05);
   --focus-ring: rgb(28 25 20 / 0.14);
-  --accent: #9333ea;
-  --accent-strong: #7e22ce;
-  --accent-2: #db2777;
-  --accent-soft: rgb(147 51 234 / 0.12);
 }
 
 [data-theme="night"] {
@@ -85,11 +76,6 @@
   --glass-border: rgb(255 255 255 / 0.16);
   --chip-bg: rgb(255 255 255 / 0.06);
   --focus-ring: rgb(255 255 255 / 0.16);
-  --accent: #a78bfa;
-  --accent-strong: #c4b5fd;
-  --accent-2: #f472b6;
-  --accent-ink: #1a1025;
-  --accent-soft: rgb(167 139 250 / 0.14);
   color-scheme: dark;
 }
 
@@ -99,13 +85,6 @@
 
 .font-display {
   font-family: "Unbounded", ui-sans-serif, system-ui, sans-serif;
-}
-
-.text-gradient {
-  background: linear-gradient(120deg, var(--accent) 0%, var(--accent-2) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
 }
 
 html {

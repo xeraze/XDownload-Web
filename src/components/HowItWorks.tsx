@@ -25,18 +25,18 @@ export default function HowItWorks() {
             <a
               key={step.title}
               href="#how"
-              className="group relative overflow-hidden rounded-3xl border border-[color:var(--line)] bg-[color:var(--chip-bg)] p-7 transition-all hover:-translate-y-1 hover:border-[color:var(--accent)] sm:p-8"
+              className="group relative overflow-hidden rounded-3xl border border-[color:var(--line)] bg-[color:var(--chip-bg)] p-7 transition-all hover:-translate-y-1 hover:border-[color:var(--glass-border)] sm:p-8"
             >
               <span
                 aria-hidden="true"
-                className="font-display pointer-events-none absolute -top-6 right-4 text-8xl leading-none font-extrabold tracking-tight text-[color:var(--accent)] opacity-10 select-none transition-opacity group-hover:opacity-25"
+                className="font-display pointer-events-none absolute -top-6 right-4 text-8xl leading-none font-extrabold tracking-tight text-[color:var(--line-strong)] select-none transition-colors group-hover:text-[color:var(--ink-soft)]"
               >
                 {String(index + 1).padStart(2, "0")}
               </span>
-              <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[color:var(--accent-ink)] text-[color:var(--accent)] transition-transform group-hover:scale-110">
+              <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-[color:var(--line)] bg-[color:var(--bg)] text-[color:var(--ink)] transition-transform group-hover:scale-110">
                 <StepIcon width={22} height={22} />
               </span>
-              <h3 className="font-display mt-6 text-xl font-semibold tracking-tight sm:text-2xl">
+              <h3 className="font-display mt-6 text-xl font-semibold tracking-tight text-[color:var(--ink)] sm:text-2xl">
                 {step.title}
               </h3>
               <p className="mt-3 text-base leading-relaxed text-[color:var(--ink-soft)] text-pretty">

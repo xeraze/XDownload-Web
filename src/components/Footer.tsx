@@ -6,7 +6,7 @@ export default function Footer() {
   return (
     <footer className="border-t border-[color:var(--line)]">
       <div className="mx-auto flex w-full max-w-[2000px] flex-col gap-3 px-6 py-8 text-xs text-[color:var(--ink-soft)] sm:flex-row sm:items-center sm:justify-between sm:px-10 xl:px-16">
-        <span className="font-hand text-xl leading-none font-bold text-gradient">XDownload</span>
+        <span className="font-hand text-xl leading-none font-bold text-[color:var(--ink)]">XDownload</span>
         <span>{t("footer.note")}</span>
         <div className="flex flex-wrap items-center gap-5">
           <span className="font-medium text-[color:var(--ink)]">{t("footer.contacts")}</span>
