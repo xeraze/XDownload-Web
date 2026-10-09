@@ -23,7 +23,8 @@ const resources = {
         local: "на твоём устройстве",
       },
       hero: {
-        title: "Скачивай видео и аудио",
+        titleAccent: "Скачивай",
+        titleRest: "видео и аудио",
         subtitle:
           "Вставь ссылку, выбери формат и качество - получий готовый файл! 13 сервисов, без регистрации и водяных знаков.",
         cta: "Скачать файл",
@@ -53,6 +54,8 @@ const resources = {
         replace: "Заменить",
         fast: "Быстро · локально",
         ai: "ИИ · Real-ESRGAN",
+        modelAnime: "Иллюстрации",
+        modelPhoto: "Фото",
         modeClean: "Чистка 1:1",
         modeX2: "Апскейл ×2",
         modeX4: "Апскейл ×4",
@@ -63,6 +66,7 @@ const resources = {
         work: "Обрабатываем - это займёт пару секунд…",
         download: "Скачать результат",
         again: "Обработать заново",
+        fallback: "ИИ сейчас недоступен - применили быструю локальную обработку.",
         errBusy: "Сервис перегружен - подождите минуту.",
         errSize: "Файл слишком большой - максимум 120 МБ.",
         errFormat: "Нужен JPEG или PNG.",
@@ -154,7 +158,8 @@ const resources = {
         local: "on your device",
       },
       hero: {
-        title: "Download video and audio",
+        titleAccent: "Download",
+        titleRest: "video and audio",
         subtitle:
           "Paste a link - pick a format and save the file. 13 services, no sign-ups, no watermarks.",
         cta: "Download a file",
@@ -184,6 +189,8 @@ const resources = {
         replace: "Replace",
         fast: "Fast · local",
         ai: "AI · Real-ESRGAN",
+        modelAnime: "Illustrations",
+        modelPhoto: "Photos",
         modeClean: "Cleanup 1:1",
         modeX2: "Upscale ×2",
         modeX4: "Upscale ×4",
@@ -194,6 +201,7 @@ const resources = {
         work: "Processing - this takes a couple of seconds…",
         download: "Download result",
         again: "Start over",
+        fallback: "AI is unavailable right now - applied fast local processing.",
         errBusy: "Service is busy - wait a minute.",
         errSize: "File too big - 120 MB max.",
         errFormat: "JPEG or PNG only.",

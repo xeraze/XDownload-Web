@@ -38,9 +38,9 @@ export default function Header() {
   return (
     <header className="glass sticky top-0 z-50">
       <div className="mx-auto flex h-16 w-full max-w-[2000px] items-center justify-between gap-3 px-6 sm:gap-0 sm:px-10 xl:px-16">
-        <a href="#home" className="flex items-center gap-2.5 text-lg font-semibold tracking-tight">
+        <a href="#home" className="flex items-center gap-2.5">
           <img src={logoUrl} alt="" className="h-7 w-7 object-contain dark:invert" />
-          XDownload
+          <span className="font-hand text-2xl leading-none font-bold text-gradient">XDownload</span>
         </a>
         <nav className="flex items-center gap-3 text-sm sm:gap-6">
           <a
@@ -63,7 +63,7 @@ export default function Header() {
           </a>
           <a
             href="#download"
-            className="rounded-full bg-[color:var(--ink)] px-4 py-1.5 text-xs font-medium text-[color:var(--bg)] transition-all hover:opacity-85 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--ink)]"
+            className="rounded-full bg-[color:var(--accent)] px-4 py-1.5 text-xs font-medium text-[color:var(--accent-ink)] transition-all hover:bg-[color:var(--accent-strong)] active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
           >
             {t("nav.download")}
           </a>

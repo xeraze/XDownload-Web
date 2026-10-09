@@ -104,10 +104,13 @@ async function getUploadPart(fileID: string, index: number): Promise<Blob> {
   throw last ?? new EnhanceError(0);
 }
 
+export type EnhanceModel = "anime" | "photo";
+
 async function enhanceImageBig(
   file: File,
   mode: "clean" | "x2" | "x4",
   engine: "local" | "ai",
+  model: EnhanceModel,
 ): Promise<Blob> {
   const fileID = crypto.randomUUID().toLowerCase();
   const total = Math.ceil(file.size / UPLOAD_PART);
@@ -118,7 +121,7 @@ async function enhanceImageBig(
   const res = await fetch(`${base}/api/enhance-big`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ fileId: fileID, parts: total, mode, engine }),
+    body: JSON.stringify({ fileId: fileID, parts: total, mode, engine, model }),
     signal: AbortSignal.timeout(95_000),
   });
   if (!res.ok) throw new EnhanceError(res.status);
@@ -135,12 +138,14 @@ export async function enhanceImage(
   file: File,
   mode: "clean" | "x2" | "x4",
   engine: "local" | "ai",
+  model: EnhanceModel,
 ): Promise<Blob> {
-  if (file.size > SMALL_MAX) return enhanceImageBig(file, mode, engine);
+  if (file.size > SMALL_MAX) return enhanceImageBig(file, mode, engine, model);
   const form = new FormData();
   form.append("file", file);
   form.append("mode", mode);
   form.append("engine", engine);
+  form.append("model", model);
   const response = await fetch(`${base}/api/enhance`, {
     method: "POST",
     body: form,

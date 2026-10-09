@@ -125,7 +125,7 @@ func handleEnhance(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	out, format, status, msg := enhanceBytes(raw, r.FormValue("mode"), r.FormValue("engine"))
+	out, format, status, msg := enhanceBytes(raw, r.FormValue("mode"), r.FormValue("engine"), r.FormValue("model"))
 	if status != 0 {
 		writeJSON(w, status, map[string]string{"error": msg})
 		return
@@ -141,18 +141,24 @@ func handleEnhance(w http.ResponseWriter, r *http.Request) {
 	_, _ = w.Write(body)
 }
 
-func enhanceBytes(raw []byte, mode, engine string) (image.Image, string, int, string) {
+func enhanceBytes(raw []byte, mode, engine, model string) (image.Image, string, int, string) {
 	if mode == "" {
 		mode = "clean"
 	}
 	if engine == "" {
 		engine = "local"
 	}
+	if model == "" {
+		model = "anime"
+	}
 	if mode != "clean" && mode != "x2" && mode != "x4" {
 		return nil, "", http.StatusBadRequest, "invalid mode"
 	}
 	if engine != "local" && engine != "ai" {
 		return nil, "", http.StatusBadRequest, "invalid engine"
+	}
+	if model != "anime" && model != "photo" {
+		return nil, "", http.StatusBadRequest, "invalid model"
 	}
 	if engine == "ai" && mode == "clean" {
 		mode = "x2"
@@ -187,7 +193,11 @@ func enhanceBytes(raw []byte, mode, engine string) (image.Image, string, int, st
 	var out image.Image
 	switch engine {
 	case "ai":
-		data, err := realESRGANEnhance(raw)
+		esrModel := "realesr-animevideov3-x4"
+		if model == "photo" {
+			esrModel = "realesrgan-x4plus"
+		}
+		data, err := realESRGANEnhance(raw, esrModel)
 		if err != nil {
 			if errors.Is(err, errEnhanceToolMissing) {
 				return nil, "", http.StatusServiceUnavailable, "ai unavailable"
@@ -215,7 +225,7 @@ func encodeEnhanced(out image.Image, format string) ([]byte, string, int, string
 			return nil, "", http.StatusInternalServerError, "encode failed"
 		}
 	} else {
-		if err := jpeg.Encode(buf, out, &jpeg.Options{Quality: 90}); err != nil {
+		if err := jpeg.Encode(buf, out, &jpeg.Options{Quality: 95}); err != nil {
 			return nil, "", http.StatusInternalServerError, "encode failed"
 		}
 	}
@@ -312,6 +322,7 @@ func handleEnhanceBig(w http.ResponseWriter, r *http.Request) {
 		Parts  int    `json:"parts"`
 		Mode   string `json:"mode"`
 		Engine string `json:"engine"`
+		Model  string `json:"model"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid json"})
@@ -336,7 +347,7 @@ func handleEnhanceBig(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	out, format, status, msg := enhanceBytes(raw, req.Mode, req.Engine)
+	out, format, status, msg := enhanceBytes(raw, req.Mode, req.Engine, req.Model)
 	if status != 0 {
 		writeJSON(w, status, map[string]string{"error": msg})
 		return
@@ -363,7 +374,7 @@ func handleEnhanceBig(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]any{"resultId": resultID, "parts": resultParts, "type": ct})
 }
 
-func realESRGANEnhance(src []byte) ([]byte, error) {
+func realESRGANEnhance(src []byte, model string) ([]byte, error) {
 	dir := os.Getenv("REALSR_DIR")
 	if dir == "" {
 		dir = `D:\Codding\XDownload Web\tools\realesrgan`
@@ -384,7 +395,7 @@ func realESRGANEnhance(src []byte) ([]byte, error) {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 4*time.Minute)
 	defer cancel()
-	cmd := exec.CommandContext(ctx, exe, "-i", inPath, "-o", outPath, "-n", "realesrgan-x4plus", "-s", "4", "-f", "png")
+	cmd := exec.CommandContext(ctx, exe, "-i", inPath, "-o", outPath, "-n", model, "-s", "4", "-f", "png")
 	cmd.Dir = dir
 	output, err := cmd.CombinedOutput()
 	if err != nil {

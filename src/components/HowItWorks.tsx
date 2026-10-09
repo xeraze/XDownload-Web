@@ -7,37 +7,41 @@ export default function HowItWorks() {
   const { t } = useTranslation();
 
   const steps = [
-    { icon: IconLink, title: t("how.s1t") },
-    { icon: IconVideo, title: t("how.s2t") },
-    { icon: IconDownload, title: t("how.s3t") },
+    { icon: IconLink, title: t("how.s1t"), desc: t("how.s1d") },
+    { icon: IconVideo, title: t("how.s2t"), desc: t("how.s2d") },
+    { icon: IconDownload, title: t("how.s3t"), desc: t("how.s3d") },
   ];
 
   return (
-    <section className="py-12 sm:py-16">
-      <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+    <section className="py-14 sm:py-20">
+      <h2 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl">
         {t("how.title")}
       </h2>
-      <div className="mt-8 grid gap-4 sm:grid-cols-3">
+      <p className="mt-2 text-base text-[color:var(--ink-soft)]">{t("how.lead")}</p>
+      <div className="mt-10 grid gap-4 sm:grid-cols-3 sm:gap-5">
         {steps.map((step, index) => {
           const StepIcon = step.icon;
           return (
             <a
               key={step.title}
               href="#how"
-              className="group relative overflow-hidden rounded-3xl border border-[color:var(--line)] bg-[color:var(--chip-bg)] p-6 transition-all hover:-translate-y-0.5 hover:border-[color:var(--glass-border)]"
+              className="group relative overflow-hidden rounded-3xl border border-[color:var(--line)] bg-[color:var(--chip-bg)] p-7 transition-all hover:-translate-y-1 hover:border-[color:var(--accent)] sm:p-8"
             >
               <span
                 aria-hidden="true"
-                className="pointer-events-none absolute -top-4 right-3 text-6xl font-semibold tracking-tight text-[color:var(--line-strong)] select-none"
+                className="font-display pointer-events-none absolute -top-6 right-4 text-8xl leading-none font-extrabold tracking-tight text-[color:var(--accent)] opacity-10 select-none transition-opacity group-hover:opacity-25"
               >
                 {String(index + 1).padStart(2, "0")}
               </span>
-              <div className="flex items-center gap-3">
-                <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--line)]">
-                  <StepIcon width={16} height={16} />
-                </span>
-              </div>
-              <h3 className="mt-4 font-medium">{step.title}</h3>
+              <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[color:var(--accent-ink)] text-[color:var(--accent)] transition-transform group-hover:scale-110">
+                <StepIcon width={22} height={22} />
+              </span>
+              <h3 className="font-display mt-6 text-xl font-semibold tracking-tight sm:text-2xl">
+                {step.title}
+              </h3>
+              <p className="mt-3 text-base leading-relaxed text-[color:var(--ink-soft)] text-pretty">
+                {step.desc}
+              </p>
             </a>
           );
         })}

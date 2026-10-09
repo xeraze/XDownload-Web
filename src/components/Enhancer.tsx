@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import IconDownload from "~icons/tabler/download";
 import IconImage from "~icons/tabler/photo";
 import IconSparkles from "~icons/tabler/sparkles";
-import { EnhanceError, enhanceImage } from "../lib/api";
+import { EnhanceError, enhanceImage, type EnhanceModel } from "../lib/api";
 import { PRIMARY } from "../lib/buttons";
 import Compare from "./Compare";
 
@@ -22,10 +22,12 @@ export default function Enhancer() {
   const { t } = useTranslation();
   const [file, setFile] = useState<File | null>(null);
   const [engine, setEngine] = useState<Engine>("local");
+  const [model, setModel] = useState<EnhanceModel>("anime");
   const [mode, setMode] = useState<Mode>("clean");
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [errorKey, setErrorKey] = useState<string | null>(null);
+  const [fellBack, setFellBack] = useState(false);
   const [cmp, setCmp] = useState<Dims | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const previewRef = useRef<string | null>(null);
@@ -48,6 +50,7 @@ export default function Enhancer() {
     origRef.current = URL.createObjectURL(f);
     setResult(null);
     setErrorKey(null);
+    setFellBack(false);
     setCmp(null);
     setFile(f);
   };
@@ -57,31 +60,43 @@ export default function Enhancer() {
     if (next === "ai" && mode === "clean") setMode("x2");
   };
 
+  const applyResult = async (blob: Blob) => {
+    const url = URL.createObjectURL(blob);
+    if (previewRef.current) URL.revokeObjectURL(previewRef.current);
+    previewRef.current = url;
+    setResult(url);
+    setCmp(null);
+    const load = (src: string) =>
+      new Promise<{ w: number; h: number }>((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve({ w: img.naturalWidth, h: img.naturalHeight });
+        img.onerror = () => resolve({ w: 0, h: 0 });
+        img.src = src;
+      });
+    const [o, r] = await Promise.all([load(origRef.current ?? url), load(url)]);
+    setCmp({ ow: o.w, oh: o.h, rw: r.w, rh: r.h });
+  };
+
   const start = async () => {
     if (!file || busy) return;
     setBusy(true);
     setErrorKey(null);
+    setFellBack(false);
     try {
-      const blob = await enhanceImage(file, mode, engine);
-      const url = URL.createObjectURL(blob);
-      if (previewRef.current) URL.revokeObjectURL(previewRef.current);
-      previewRef.current = url;
-      setResult(url);
-      setCmp(null);
-      const load = (src: string) =>
-        new Promise<{ w: number; h: number }>((resolve) => {
-          const img = new Image();
-          img.onload = () => resolve({ w: img.naturalWidth, h: img.naturalHeight });
-          img.onerror = () => resolve({ w: 0, h: 0 });
-          img.src = src;
-        });
-      const [o, r] = await Promise.all([
-        load(origRef.current ?? url),
-        load(url),
-      ]);
-      setCmp({ ow: o.w, oh: o.h, rw: r.w, rh: r.h });
+      const blob = await enhanceImage(file, mode, engine, model);
+      await applyResult(blob);
     } catch (err) {
       const status = err instanceof EnhanceError ? err.status : 0;
+      if (engine === "ai" && (status === 502 || status === 503)) {
+        try {
+          const blob = await enhanceImage(file, mode === "clean" ? "x2" : mode, "local", model);
+          await applyResult(blob);
+          setFellBack(true);
+          return;
+        } catch {
+          // fall through to the shared error handling below
+        }
+      }
       setErrorKey(
         status === 429
           ? "errBusy"
@@ -150,6 +165,16 @@ export default function Enhancer() {
           </div>
 
           <div className="flex flex-wrap gap-3">
+            {engine === "ai" && (
+              <>
+                <button type="button" className={seg(model === "anime")} onClick={() => setModel("anime")}>
+                  {t("enh.modelAnime")}
+                </button>
+                <button type="button" className={seg(model === "photo")} onClick={() => setModel("photo")}>
+                  {t("enh.modelPhoto")}
+                </button>
+              </>
+            )}
             {engine === "local" && (
               <button type="button" className={seg(mode === "clean")} onClick={() => setMode("clean")}>
                 {t("enh.modeClean")}
@@ -198,6 +223,7 @@ export default function Enhancer() {
                   onClick={() => {
                     setResult(null);
                     setErrorKey(null);
+                    setFellBack(false);
                     setCmp(null);
                   }}
                 >
@@ -210,6 +236,10 @@ export default function Enhancer() {
               <IconSparkles width={16} height={16} />
               {t("enh.workBtn")}
             </button>
+          )}
+
+          {fellBack && !busy && (
+            <p className="text-center text-sm text-amber-600 dark:text-amber-400">{t("enh.fallback")}</p>
           )}
 
           {errorKey && !busy && (

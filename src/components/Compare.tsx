@@ -48,10 +48,10 @@ export default function Compare({ original, result, dims, alt }: Props) {
       <div className="absolute inset-0" style={{ clipPath: `inset(0 0 0 ${pos}%)` }}>
         <img src={result} alt={alt} draggable={false} className="block w-full" />
       </div>
-      <span className="absolute left-2 top-2 rounded-lg bg-black/55 px-2 py-1 text-xs font-medium text-white backdrop-blur-sm">
+      <span className="absolute left-2 top-2 rounded-lg bg-black px-2.5 py-1 text-xs font-medium text-white">
         {dims.ow} x {dims.oh} px
       </span>
-      <span className="absolute right-2 top-2 rounded-lg bg-sky-600 px-2 py-1 text-xs font-medium text-white">
+      <span className="absolute right-2 top-2 rounded-lg bg-white px-2.5 py-1 text-xs font-medium text-black shadow-md">
         {dims.rw} x {dims.rh} px
       </span>
       <div className="pointer-events-none absolute inset-y-0" style={{ left: `${pos}%` }}>

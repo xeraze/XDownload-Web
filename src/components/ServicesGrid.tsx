@@ -72,19 +72,48 @@ export default function ServicesGrid() {
   );
 }
 
-export function ServicesStrip() {
+export function ServicesMarquee() {
+  const row = [...SERVICES, ...SERVICES];
   return (
-    <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-[color:var(--ink-soft)]">
-      {SERVICES.map(({ name, icon, color }) => (
-        <span
-          key={name}
-          style={{ "--brand": color } as CSSProperties}
-          className="flex items-center gap-2 rounded-full border border-[color:var(--line)] bg-[color:var(--chip-bg)] px-3 py-1.5 text-sm text-[color:var(--ink-soft)] transition-colors hover:border-[color:var(--glass-border)] hover:text-[color:var(--brand)]"
-        >
-          <Icon icon={icon} size={16} />
-          {name}
-        </span>
-      ))}
+    <div className="flex flex-col gap-4">
+      <div className="marquee">
+        <div className="marquee-track">
+          {row.map(({ name, icon, color }, index) => (
+            <span
+              key={`${name}-${index}`}
+              style={{ "--brand": color } as CSSProperties}
+              className="group flex shrink-0 items-center gap-3 pr-10"
+            >
+              <Icon icon={icon} size={22} />
+              <span className="font-display text-2xl font-semibold tracking-tight text-[color:var(--ink)] uppercase transition-colors group-hover:text-[color:var(--brand)] sm:text-3xl">
+                {name}
+              </span>
+              <span aria-hidden="true" className="text-[color:var(--accent)]">
+                ✦
+              </span>
+            </span>
+          ))}
+        </div>
+      </div>
+      <div className="marquee marquee-reverse">
+        <div className="marquee-track">
+          {row.map(({ name, icon, color }, index) => (
+            <span
+              key={`rev-${name}-${index}`}
+              style={{ "--brand": color } as CSSProperties}
+              className="group flex shrink-0 items-center gap-3 pr-10"
+            >
+              <span aria-hidden="true" className="text-[color:var(--accent-2)]">
+                ✦
+              </span>
+              <Icon icon={icon} size={16} />
+              <span className="font-display text-lg font-medium tracking-tight text-[color:var(--ink-soft)] uppercase transition-colors group-hover:text-[color:var(--brand)] sm:text-xl">
+                {name}
+              </span>
+            </span>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
