@@ -72,12 +72,26 @@ export function scheduleState(now: Date = new Date()): ScheduleState {
   return { theme, paused, opensToday, nextOpen, nextClose };
 }
 
+function nextOpenFallback(now: Date = new Date()): Date {
+  const parts = partsFmt(TZ).formatToParts(now);
+  const get = (type: string) => Number(parts.find((p) => p.type === type)?.value);
+  const minutes = get("hour") * 60 + get("minute");
+  return zonedWallToUtc(get("year"), get("month"), get("day") + (minutes >= OPEN_MIN ? 1 : 0), OPEN_MIN);
+}
+
 export function previewState(param: string | null): ScheduleState | null {
   if (!param) return null;
   const real = scheduleState();
   if (param === "day") return { ...real, theme: "day", paused: false };
-  if (param === "morning") return { ...real, theme: "morning", paused: true };
-  if (param === "night") return { ...real, theme: "night", paused: true };
+  if (param === "morning" || param === "night") {
+    const theme: Theme = param;
+    return {
+      ...real,
+      theme,
+      paused: true,
+      nextOpen: real.nextOpen ?? nextOpenFallback(),
+    };
+  }
   return null;
 }
 

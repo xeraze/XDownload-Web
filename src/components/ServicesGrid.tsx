@@ -1,5 +1,4 @@
 import type { ComponentType, SVGProps } from "react";
-import type { CSSProperties } from "react";
 import IconFacebook from "~icons/simple-icons/facebook";
 import IconInstagram from "~icons/simple-icons/instagram";
 import IconPinterest from "~icons/simple-icons/pinterest";
@@ -20,23 +19,22 @@ interface Service {
   name: string;
   icon: IconComponent;
   video: boolean;
-  color: string;
 }
 
 const SERVICES: Service[] = [
-  { name: "YouTube", icon: IconYoutube, video: true, color: "#FF0000" },
-  { name: "YouTube Music", icon: IconYoutubemusic, video: false, color: "#FF0000" },
-  { name: "Spotify", icon: IconSpotify, video: false, color: "#1DB954" },
-  { name: "SoundCloud", icon: IconSoundcloud, video: false, color: "#FF5500" },
-  { name: "TikTok", icon: IconTiktok, video: true, color: "#FE2C55" },
-  { name: "Instagram", icon: IconInstagram, video: true, color: "#E4405F" },
-  { name: "Facebook", icon: IconFacebook, video: true, color: "#0866FF" },
-  { name: "Reddit", icon: IconReddit, video: true, color: "#FF4500" },
-  { name: "Pinterest", icon: IconPinterest, video: true, color: "#E60023" },
-  { name: "VK", icon: IconVk, video: true, color: "#0077FF" },
-  { name: "X (Twitter)", icon: IconX, video: true, color: "#1D9BF0" },
-  { name: "Rumble", icon: IconRumble, video: true, color: "#85C75C" },
-  { name: "Snapchat", icon: IconSnapchat, video: true, color: "#F7C600" },
+  { name: "YouTube", icon: IconYoutube, video: true },
+  { name: "YouTube Music", icon: IconYoutubemusic, video: false },
+  { name: "Spotify", icon: IconSpotify, video: false },
+  { name: "SoundCloud", icon: IconSoundcloud, video: false },
+  { name: "TikTok", icon: IconTiktok, video: true },
+  { name: "Instagram", icon: IconInstagram, video: true },
+  { name: "Facebook", icon: IconFacebook, video: true },
+  { name: "Reddit", icon: IconReddit, video: true },
+  { name: "Pinterest", icon: IconPinterest, video: true },
+  { name: "VK", icon: IconVk, video: true },
+  { name: "X (Twitter)", icon: IconX, video: true },
+  { name: "Rumble", icon: IconRumble, video: true },
+  { name: "Snapchat", icon: IconSnapchat, video: true },
 ];
 
 function Icon({ icon: Comp, size = 20 }: { icon: IconComponent; size?: number }) {
@@ -46,13 +44,12 @@ function Icon({ icon: Comp, size = 20 }: { icon: IconComponent; size?: number })
 export default function ServicesGrid() {
   return (
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7">
-      {SERVICES.map(({ name, icon, video, color }) => (
+      {SERVICES.map(({ name, icon, video }) => (
         <div
           key={name}
-          style={{ "--brand": color } as CSSProperties}
           className="group flex flex-col gap-3 rounded-2xl border border-[color:var(--line)] bg-[color:var(--chip-bg)] px-4 py-4 transition-all hover:-translate-y-0.5 hover:border-[color:var(--glass-border)]"
         >
-          <span className="text-[color:var(--ink-soft)] transition-colors group-hover:text-[color:var(--brand)]">
+          <span className="text-[color:var(--ink-soft)] transition-colors group-hover:text-[color:var(--ink)]">
             <Icon icon={icon} />
           </span>
           <span className="text-sm font-medium leading-tight">{name}</span>
@@ -78,14 +75,10 @@ export function ServicesMarquee() {
     <div className="flex flex-col gap-4">
       <div className="marquee">
         <div className="marquee-track">
-          {row.map(({ name, icon, color }, index) => (
-            <span
-              key={`${name}-${index}`}
-              style={{ "--brand": color } as CSSProperties}
-              className="group flex shrink-0 items-center gap-3 pr-10"
-            >
+          {row.map(({ name, icon }, index) => (
+            <span key={`${name}-${index}`} className="flex shrink-0 items-center gap-3 pr-10">
               <Icon icon={icon} size={22} />
-              <span className="font-display text-2xl font-semibold tracking-tight text-[color:var(--ink)] uppercase transition-colors group-hover:text-[color:var(--brand)] sm:text-3xl">
+              <span className="font-display text-2xl font-semibold tracking-tight text-[color:var(--ink)] uppercase sm:text-3xl">
                 {name}
               </span>
               <span aria-hidden="true" className="text-[color:var(--ink-soft)]">
@@ -97,17 +90,13 @@ export function ServicesMarquee() {
       </div>
       <div className="marquee marquee-reverse">
         <div className="marquee-track">
-          {row.map(({ name, icon, color }, index) => (
-            <span
-              key={`rev-${name}-${index}`}
-              style={{ "--brand": color } as CSSProperties}
-              className="group flex shrink-0 items-center gap-3 pr-10"
-            >
+          {row.map(({ name, icon }, index) => (
+            <span key={`rev-${name}-${index}`} className="flex shrink-0 items-center gap-3 pr-10">
               <span aria-hidden="true" className="text-[color:var(--ink-soft)]">
                 ✦
               </span>
               <Icon icon={icon} size={16} />
-              <span className="font-display text-lg font-medium tracking-tight text-[color:var(--ink-soft)] uppercase transition-colors group-hover:text-[color:var(--brand)] sm:text-xl">
+              <span className="font-display text-lg font-medium tracking-tight text-[color:var(--ink-soft)] uppercase sm:text-xl">
                 {name}
               </span>
             </span>

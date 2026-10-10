@@ -38,9 +38,11 @@ export default function Header() {
   return (
     <header className="glass sticky top-0 z-50">
       <div className="mx-auto flex h-16 w-full max-w-[2000px] items-center justify-between gap-3 px-6 sm:gap-0 sm:px-10 xl:px-16">
-        <a href="#home" className="flex items-center gap-2.5">
+        <a href="#home" className="flex shrink-0 items-center gap-2.5">
           <img src={logoUrl} alt="" className="h-7 w-7 object-contain dark:invert" />
-          <span className="font-hand text-2xl leading-none font-bold text-[color:var(--ink)]">XDownload</span>
+          <span className="font-hand text-2xl leading-normal font-bold whitespace-nowrap text-[color:var(--ink)]">
+            XDownload
+          </span>
         </a>
         <nav className="flex items-center gap-3 text-sm sm:gap-6">
           <a
@@ -54,12 +56,6 @@ export default function Header() {
             className="hidden text-[color:var(--ink-soft)] transition-colors hover:text-[color:var(--ink)] sm:block"
           >
             {t("nav.services")}
-          </a>
-          <a
-            href="#enhance"
-            className="hidden text-[color:var(--ink-soft)] transition-colors hover:text-[color:var(--ink)] sm:block"
-          >
-            {t("nav.enhance")}
           </a>
           <a
             href="#download"
@@ -93,13 +89,6 @@ export default function Header() {
               className="block border-t border-[color:var(--line)] py-3 text-sm text-[color:var(--ink-soft)] transition-colors hover:text-[color:var(--ink)]"
             >
               {t("nav.services")}
-            </a>
-            <a
-              href="#enhance"
-              onClick={() => setOpen(false)}
-              className="block border-t border-[color:var(--line)] py-3 text-sm text-[color:var(--ink-soft)] transition-colors hover:text-[color:var(--ink)]"
-            >
-              {t("nav.enhance")}
             </a>
             <div className="border-t border-[color:var(--line)] py-3">{langSwitch("always")}</div>
           </div>
