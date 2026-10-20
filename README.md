@@ -4,7 +4,7 @@
 
 Web version of XDownload: download video and audio from 13 services directly in your browser. A personal project: no ads, no fees, no accounts.
 
-Telegram bot and Go backend live in the main repository: https://github.com/xeraze/XDownload-Telegram
+Telegram bot and Go backend live in the main repository: https://github.com/xeraze/XDownload
 
 ## How it works
 
